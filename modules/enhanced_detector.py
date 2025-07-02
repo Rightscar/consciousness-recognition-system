@@ -19,7 +19,7 @@ except ImportError:
     # Fallback for standalone usage
     import sys
     sys.path.append('..')
-    from detector import DialogueDetractor
+    from detector import DialogueDetector
     from content_analyzer import ContentAnalyzer, PassageExtractor, SyntheticQAGenerator, ContentType
     from scorer import ConsciousnessScorer
 
@@ -78,6 +78,17 @@ class EnhancedDialogueDetector(DialogueDetector):
             Detection results with dialogues and analysis
         """
         try:
+            # Defensive check: Convert list to string if needed
+            if isinstance(text, list):
+                text = "\n\n".join(text)
+            
+            # Ensure we have a string
+            if not isinstance(text, str):
+                raise ValueError(f"Expected string or list, got {type(text)}")
+            
+            progress_bar = None
+            status_text = None
+            
             if show_progress:
                 progress_bar = st.progress(0)
                 status_text = st.empty()
