@@ -379,6 +379,30 @@ def render_upload_tab():
                 
                 text = extraction_result['text']
                 
+                # 🔍 DEBUG: Inspect extracted text type and content
+                st.write("**🔍 DEBUG INFO:**")
+                st.write(f"Type of extracted text: `{type(text)}`")
+                if isinstance(text, list):
+                    st.write(f"List length: {len(text)}")
+                    st.write(f"First few items: {text[:3] if len(text) > 0 else 'Empty list'}")
+                    st.write("Preview:", text[:2] if isinstance(text, list) else text[:200])
+                else:
+                    st.write("Preview:", text[:200] if text else "Empty string")
+                
+                # 🔧 STANDARDIZE: Ensure text is always a string
+                if isinstance(text, list):
+                    st.warning("⚠️ Text extraction returned a list - converting to string")
+                    text = "\n\n".join(str(item) for item in text if item)
+                    st.write(f"After conversion - Type: `{type(text)}`, Length: {len(text)}")
+                elif not isinstance(text, str):
+                    st.error(f"❌ Unexpected text type: {type(text)} - converting to string")
+                    text = str(text)
+                
+                # Ensure we have valid text
+                if not text or not text.strip():
+                    st.error("❌ No text extracted from file")
+                    continue
+                
                 # Display extraction results
                 col1, col2, col3, col4 = st.columns(4)
                 with col1:
