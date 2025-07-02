@@ -399,11 +399,19 @@ def render_upload_tab():
                         if value and key not in ['extractor']:
                             st.write(f"• **{key.title()}:** {value}")
                 
+                # Debug: Check text type before detection
+                if not isinstance(text, str):
+                    st.error(f"❌ Text extraction returned {type(text)} instead of string. Content: {str(text)[:100]}...")
+                    continue
+                
                 if len(text.strip()) < 100:
                     st.warning("⚠️ Very little text extracted. File may be image-based or corrupted.")
                     continue
                 
                 # Step 3: Dialogue detection
+                st.info("🔍 Detecting dialogues...")
+                
+                # Define mode mapping
                 mode_map = {
                     "Multi-Mode (Recommended)": "multi_mode",
                     "Auto (Regex + Semantic)": "auto",
@@ -433,7 +441,7 @@ def render_upload_tab():
                             st.write(f"• {rec}")
                 
                 detection_result = detector.detect_dialogues_with_progress(
-                    extraction_result['text'],
+                    text,  # Use the extracted text directly, not extraction_result['text']
                     mode=mode_map[detection_mode],
                     semantic_threshold=semantic_threshold,
                     show_progress=True
