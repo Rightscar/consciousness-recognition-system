@@ -78,13 +78,11 @@ class EnhancedDialogueDetector(DialogueDetector):
             Detection results with dialogues and analysis
         """
         try:
-            # Defensive check: Convert list to string if needed
+            # 🛡️ DEFENSIVE: Ensure text is always a string (backup safety check)
             if isinstance(text, list):
-                text = "\n\n".join(text)
-            
-            # Ensure we have a string
-            if not isinstance(text, str):
-                raise ValueError(f"Expected string or list, got {type(text)}")
+                text = "\n\n".join(str(item) for item in text if item)
+            elif not isinstance(text, str):
+                text = str(text)
             
             progress_bar = None
             status_text = None
