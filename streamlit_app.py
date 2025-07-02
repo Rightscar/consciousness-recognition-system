@@ -31,6 +31,7 @@ try:
     from modules.scorer import ConsciousnessScorer, DialogueMode
     from modules.trainer import OpenAITrainer
     from modules.jsonl_manager import JSONLManager, FileManager
+    from modules.text_validator import TextValidator, validate_text, validate_extraction, emergency_text_fix
 except ImportError:
     st.error("Required modules not found. Please ensure all modules are in the modules/ directory.")
     st.stop()
@@ -112,6 +113,7 @@ def validate_file_size(uploaded_file, max_size_mb: int = 50) -> Dict[str, Any]:
 
 
 def render_memory_management_sidebar():
+    """Render memory management controls in siddef render_memory_management_sidebar():
     """Render memory management controls in sidebar."""
     st.sidebar.header("🧠 Memory Management")
     
@@ -121,6 +123,25 @@ def render_memory_management_sidebar():
     memory_mb = memory_info.rss / 1024 / 1024
     
     st.sidebar.metric("Memory Usage", f"{memory_mb:.1f} MB")
+    
+    # Text Validation Statistics
+    st.sidebar.subheader("📊 Text Validation")
+    from modules.text_validator import get_validator_stats, reset_validator_stats
+    
+    stats = get_validator_stats()
+    if stats['total_validations'] > 0:
+        st.sidebar.metric("Total Validations", stats['total_validations'])
+        st.sidebar.metric("List Conversions", stats['list_conversions'])
+        st.sidebar.metric("Type Conversions", stats['type_conversions'])
+        st.sidebar.metric("Warnings", stats['warnings'])
+        st.sidebar.metric("Failures", stats['failures'])
+        
+        if st.sidebar.button("🔄 Reset Validation Stats"):
+            reset_validator_stats()
+            st.success("Validation statistics reset!")
+            st.rerun()
+    else:
+        st.sidebar.info("No validation data yet")
     
     # Clear cache buttons
     col1, col2 = st.sidebar.columns(2)
@@ -134,17 +155,16 @@ def render_memory_management_sidebar():
     
     with col2:
         if st.button("🔄 Reset All"):
-            # Clear all session state
-            for key in list(st.session_state.keys()):
-                del st.session_state[key]
             st.cache_data.clear()
             st.cache_resource.clear()
+            reset_validator_stats()
+            initialize_session_state()
             st.success("System reset!")
             st.rerun()
     
     # Memory usage warning
     if memory_mb > 1000:  # 1GB
-        st.sidebar.warning("⚠️ High memory usage detected. Consider clearing cache or resetting.")
+        st.sidebar.warning("⚠️ High memory usage detected. Consider clearing cache or resetting.")tting.")
 
 
 def render_file_manager_sidebar():
@@ -370,25 +390,15 @@ def render_upload_tab():
                 format_info = extractor.get_format_info(tmp_path)
                 st.write(f"**Format:** {format_info['info']['name']} ({format_info['format'].upper()})")
                 
-                # Extract text using universal extractor
+                # Extract text using universal extractor with validation framework
                 extraction_result = extractor.extract_text(tmp_path)
                 
-                if not extraction_result['success']:
-                    st.error(f"❌ Text extraction failed: {extraction_result['error']}")
+                # 🔧 COMPREHENSIVE TEXT VALIDATION FRAMEWORK
+                text = validate_extraction(extraction_result, f"PDF_{uploaded_file.name}")
+                
+                if text is None:
+                    st.error(f"❌ Text validation failed for {uploaded_file.name}")
                     continue
-                
-                text = extraction_result['text']
-                
-                # 🔧 CRITICAL FIX: Normalize text extraction result
-                # PDF extractors sometimes return List[str] (per page) instead of str
-                if isinstance(text, list):
-                    st.info("📄 Converting page-wise text list to single string...")
-                    text = "\n\n".join(str(page) for page in text if page)  # Merge pages with double newlines
-                    st.success(f"✅ Converted {len(extraction_result['text'])} pages to single text string")
-                
-                # Ensure we always have a string for downstream processing
-                if not isinstance(text, str):
-                    text = str(text)
                 
                 # Validate we have meaningful content
                 if not text or not text.strip():
@@ -415,10 +425,8 @@ def render_upload_tab():
                         if value and key not in ['extractor']:
                             st.write(f"• **{key.title()}:** {value}")
                 
-                # Debug: Check text type before detection
-                if not isinstance(text, str):
-                    st.error(f"❌ Text extraction returned {type(text)} instead of string. Content: {str(text)[:100]}...")
-                    continue
+                # 🔧 EMERGENCY SAFETY CHECK: Final text validation before processing
+                text = emergency_text_fix(text, f"final_check_{uploaded_file.name}")
                 
                 if len(text.strip()) < 100:
                     st.warning("⚠️ Very little text extracted. File may be image-based or corrupted.")
@@ -439,7 +447,14 @@ def render_upload_tab():
                 if detection_mode == "Multi-Mode (Recommended)":
                     st.info("🔍 Analyzing content type...")
                     content_analyzer = ContentAnalyzer()
-                    content_analysis = content_analyzer.analyze_content(text)
+                    
+                    # Validate text before content analysis
+                    validated_text = validate_text(text, f"content_analysis_{uploaded_file.name}")
+                    if validated_text is None:
+                        st.error("❌ Text validation failed before content analysis")
+                        continue
+                    
+                    content_analysis = content_analyzer.analyze_content(validated_text)
                     
                     # Display content analysis
                     col1, col2, col3 = st.columns(3)
@@ -456,8 +471,14 @@ def render_upload_tab():
                         for rec in content_analysis['recommendations']:
                             st.write(f"• {rec}")
                 
+                # 🔧 FINAL VALIDATION: Ensure text is ready for detector
+                final_text = validate_text(text, f"detector_input_{uploaded_file.name}")
+                if final_text is None:
+                    st.error("❌ Final text validation failed before detection")
+                    continue
+                
                 detection_result = detector.detect_dialogues_with_progress(
-                    text,  # Use the extracted text directly, not extraction_result['text']
+                    final_text,  # Use the final validated text
                     mode=mode_map[detection_mode],
                     semantic_threshold=semantic_threshold,
                     show_progress=True
