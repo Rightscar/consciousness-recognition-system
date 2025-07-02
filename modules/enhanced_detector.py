@@ -1,64 +1,60 @@
 """
-Enhanced Dialogue Detector with Lazy Model Loading
+Enhanced Dialogue Detector with Multi-Mode Processing
 
-Optimized for memory efficiency and performance.
+Supports both traditional dialogue detection and new passage extraction
+for handling diverse spiritual text formats.
 """
 
 import streamlit as st
 from typing import Dict, List, Any, Optional
-import re
 import time
+import psutil
+import os
 
 try:
     from .detector import DialogueDetector
-    from .scorer import ConsciousnessScorer, DialogueMode
+    from .content_analyzer import ContentAnalyzer, PassageExtractor, SyntheticQAGenerator, ContentType
+    from .scorer import ConsciousnessScorer
 except ImportError:
     # Fallback for standalone usage
     import sys
     sys.path.append('..')
-    from detector import DialogueDetector
-    from scorer import ConsciousnessScorer, DialogueMode
-
-
-@st.cache_resource
-def load_sentence_transformer():
-    """
-    Load sentence transformer model with caching.
-    
-    Returns:
-        SentenceTransformer model
-    """
-    try:
-        from sentence_transformers import SentenceTransformer
-        
-        with st.spinner("Loading AI model for semantic detection..."):
-            model = SentenceTransformer('all-MiniLM-L6-v2')
-        
-        st.success("✅ AI model loaded successfully!")
-        return model
-        
-    except ImportError:
-        st.error("sentence-transformers not installed. Install with: pip install sentence-transformers")
-        return None
-    except Exception as e:
-        st.error(f"Error loading model: {str(e)}")
-        return None
+    from detector import DialogueDetractor
+    from content_analyzer import ContentAnalyzer, PassageExtractor, SyntheticQAGenerator, ContentType
+    from scorer import ConsciousnessScorer
 
 
 class EnhancedDialogueDetector(DialogueDetector):
-    """Enhanced dialogue detector with lazy loading and performance optimizations."""
+    """Enhanced detector with lazy loading and multi-mode processing."""
     
     def __init__(self):
-        """Initialize enhanced detector without loading model."""
+        """Initialize enhanced detector."""
         super().__init__()
         self._model = None
         self._model_loaded = False
+        self.content_analyzer = ContentAnalyzer()
+        self.passage_extractor = PassageExtractor()
+        self.qa_generator = SyntheticQAGenerator()
+        self.scorer = ConsciousnessScorer()
     
-    @property
-    def model(self):
-        """Lazy load the sentence transformer model."""
+    @st.cache_resource
+    def _load_model(_self):
+        """Load sentence transformer model with caching."""
+        try:
+            from sentence_transformers import SentenceTransformer
+            model = SentenceTransformer('all-MiniLM-L6-v2')
+            return model
+        except ImportError:
+            st.warning("sentence-transformers not available. Semantic detection disabled.")
+            return None
+        except Exception as e:
+            st.error(f"Failed to load semantic model: {e}")
+            return None
+    
+    def get_model(self):
+        """Get model with lazy loading."""
         if not self._model_loaded:
-            self._model = load_sentence_transformer()
+            self._model = self._load_model()
             self._model_loaded = True
         return self._model
     
@@ -70,227 +66,262 @@ class EnhancedDialogueDetector(DialogueDetector):
         show_progress: bool = True
     ) -> Dict[str, Any]:
         """
-        Detect dialogues with progress tracking.
+        Enhanced dialogue detection with multi-mode processing.
         
         Args:
             text: Input text to analyze
-            mode: Detection mode ("auto", "regex", "semantic")
+            mode: Detection mode ("auto", "regex", "semantic", "multi_mode")
             semantic_threshold: Threshold for semantic similarity
-            show_progress: Whether to show progress in Streamlit
+            show_progress: Whether to show progress indicators
             
         Returns:
-            Dict with detection results
+            Detection results with dialogues and analysis
         """
-        if show_progress:
-            progress_bar = st.progress(0)
-            status_text = st.empty()
-        
         try:
-            # Step 1: Text preprocessing
             if show_progress:
-                progress_bar.progress(10)
-                status_text.text("Preprocessing text...")
+                progress_bar = st.progress(0)
+                status_text = st.empty()
+                status_text.text("Analyzing content type...")
             
-            lines = text.split('\n')
-            total_lines = len(lines)
+            # Step 1: Analyze content type
+            content_analysis = self.content_analyzer.analyze_content(text)
+            content_type = content_analysis['content_type']
             
-            # Step 2: Regex detection
             if show_progress:
-                progress_bar.progress(30)
-                status_text.text("Detecting structured dialogues...")
+                progress_bar.progress(20)
+                status_text.text(f"Content type: {content_type.value}")
             
-            regex_dialogues = []
-            if mode in ["auto", "regex"]:
-                regex_dialogues = self._detect_regex_dialogues(lines)
+            # Step 2: Choose processing strategy
+            processing_strategy = content_analysis['processing_strategy']
+            all_dialogues = []
             
-            # Step 3: Semantic detection
-            semantic_dialogues = []
-            if mode in ["auto", "semantic"]:
+            # Step 3: Process based on content type
+            if content_type in [ContentType.DIALOGUE_HEAVY, ContentType.MIXED]:
+                # Traditional dialogue extraction
                 if show_progress:
-                    progress_bar.progress(50)
-                    status_text.text("Loading AI model for semantic detection...")
+                    status_text.text("Extracting dialogues...")
                 
-                # Lazy load model only when needed
-                if self.model is not None:
-                    if show_progress:
-                        progress_bar.progress(70)
-                        status_text.text("Performing semantic analysis...")
+                dialogues = self._extract_traditional_dialogues(
+                    text, mode, semantic_threshold, show_progress, progress_bar, 20, 60
+                )
+                all_dialogues.extend(dialogues)
+            
+            if content_type in [ContentType.PROSE_HEAVY, ContentType.MIXED, ContentType.POETRY, ContentType.INSTRUCTIONAL]:
+                # Passage extraction and synthetic Q&A generation
+                if show_progress:
+                    status_text.text("Extracting meaningful passages...")
+                    progress_bar.progress(60)
+                
+                passages = self.passage_extractor.extract_passages(
+                    text, content_type, min_consciousness_score=0.3
+                )
+                
+                if show_progress:
+                    status_text.text("Generating synthetic Q&A pairs...")
+                    progress_bar.progress(80)
+                
+                # Generate synthetic Q&A from passages
+                for passage in passages:
+                    synthetic_qa = self.qa_generator.generate_qa_from_passage(passage)
                     
-                    semantic_dialogues = self._detect_semantic_dialogues_with_progress(
-                        lines, semantic_threshold, progress_bar, status_text
-                    )
+                    # Score each synthetic Q&A
+                    for qa in synthetic_qa:
+                        scoring_result = self.scorer.score_dialogue(qa['question'], qa['answer'])
+                        qa.update(scoring_result)
+                        qa['detection_method'] = 'passage_extraction'
+                        qa['original_passage_score'] = passage.get('consciousness_score', 0.5)
+                    
+                    all_dialogues.extend(synthetic_qa)
             
-            # Step 4: Combine and deduplicate
+            # Step 4: Final processing and scoring
             if show_progress:
+                status_text.text("Finalizing results...")
                 progress_bar.progress(90)
-                status_text.text("Combining results...")
             
-            all_dialogues = self._combine_dialogues(regex_dialogues, semantic_dialogues)
-            
-            # Step 5: Score dialogues
-            if show_progress:
-                progress_bar.progress(95)
-                status_text.text("Scoring consciousness recognition...")
-            
-            scorer = ConsciousnessScorer()
-            scored_dialogues = []
-            
-            for dialogue in all_dialogues:
-                score_result = scorer.score_dialogue(dialogue['question'], dialogue['answer'])
-                dialogue.update(score_result)
-                scored_dialogues.append(dialogue)
+            # Remove duplicates and sort by score
+            unique_dialogues = self._remove_duplicates(all_dialogues)
+            unique_dialogues.sort(key=lambda x: x.get('overall_score', 0), reverse=True)
             
             if show_progress:
                 progress_bar.progress(100)
-                status_text.text("✅ Detection completed!")
-                time.sleep(1)
+                status_text.text("Analysis complete!")
+                time.sleep(0.5)  # Brief pause to show completion
                 progress_bar.empty()
                 status_text.empty()
             
             return {
                 'success': True,
-                'dialogues': scored_dialogues,
-                'total_found': len(scored_dialogues),
-                'regex_count': len(regex_dialogues),
-                'semantic_count': len(semantic_dialogues),
-                'processing_stats': {
-                    'total_lines': total_lines,
-                    'mode': mode,
-                    'semantic_threshold': semantic_threshold
-                }
+                'dialogues': unique_dialogues,
+                'content_analysis': content_analysis,
+                'processing_strategy': processing_strategy,
+                'total_found': len(unique_dialogues),
+                'traditional_dialogues': len([d for d in unique_dialogues if d.get('detection_method') != 'passage_extraction']),
+                'synthetic_dialogues': len([d for d in unique_dialogues if d.get('detection_method') == 'passage_extraction']),
+                'content_type': content_type.value
             }
             
         except Exception as e:
             if show_progress:
-                progress_bar.empty()
-                status_text.empty()
                 st.error(f"Detection failed: {str(e)}")
             
             return {
                 'success': False,
                 'error': str(e),
                 'dialogues': [],
-                'total_found': 0
+                'content_analysis': None
             }
     
-    def _detect_semantic_dialogues_with_progress(
+    def _extract_traditional_dialogues(
         self,
-        lines: List[str],
-        threshold: float,
+        text: str,
+        mode: str,
+        semantic_threshold: float,
+        show_progress: bool,
         progress_bar,
-        status_text
+        start_progress: int,
+        end_progress: int
     ) -> List[Dict[str, Any]]:
-        """
-        Detect semantic dialogues with progress updates.
-        
-        Args:
-            lines: Text lines to analyze
-            threshold: Semantic similarity threshold
-            progress_bar: Streamlit progress bar
-            status_text: Streamlit status text
-            
-        Returns:
-            List of detected dialogues
-        """
-        if self.model is None:
-            return []
-        
-        # Non-dual anchor phrases for semantic comparison
-        anchor_phrases = [
-            "You are awareness itself",
-            "Remain as you are",
-            "There is no seeker, only seeking",
-            "Consciousness is your true nature",
-            "Be still and know",
-            "What you are looking for is what is looking"
-        ]
-        
-        # Get anchor embeddings
-        anchor_embeddings = self.model.encode(anchor_phrases)
-        
+        """Extract traditional Q&A dialogues."""
         dialogues = []
-        total_lines = len(lines)
         
-        # Process lines in batches to show progress
-        batch_size = max(1, total_lines // 20)  # 20 progress updates
+        # Regex detection
+        if mode in ["regex", "auto"]:
+            if show_progress:
+                progress_bar.progress(start_progress + 10)
+            
+            regex_dialogues = self._detect_regex_dialogues(text)
+            for dialogue in regex_dialogues:
+                scoring_result = self.scorer.score_dialogue(dialogue['question'], dialogue['answer'])
+                dialogue.update(scoring_result)
+                dialogue['detection_method'] = 'regex'
+            
+            dialogues.extend(regex_dialogues)
         
-        for i in range(0, total_lines, batch_size):
-            batch_end = min(i + batch_size, total_lines)
-            batch_lines = lines[i:batch_end]
+        # Semantic detection
+        if mode in ["semantic", "auto"]:
+            if show_progress:
+                progress_bar.progress(start_progress + 20)
             
-            # Update progress
-            progress = 70 + (i / total_lines) * 20  # 70-90% range
-            progress_bar.progress(progress / 100)
-            status_text.text(f"Analyzing lines {i+1}-{batch_end} of {total_lines}...")
-            
-            # Process batch
-            for line_idx, line in enumerate(batch_lines):
-                actual_idx = i + line_idx
+            model = self.get_model()
+            if model is not None:
+                semantic_dialogues = self._detect_semantic_dialogues_enhanced(
+                    text, semantic_threshold, model
+                )
+                for dialogue in semantic_dialogues:
+                    scoring_result = self.scorer.score_dialogue(dialogue['question'], dialogue['answer'])
+                    dialogue.update(scoring_result)
+                    dialogue['detection_method'] = 'semantic'
                 
-                if len(line.strip()) > 50:  # Only analyze substantial lines
-                    try:
-                        line_embedding = self.model.encode([line])
-                        similarities = self.model.similarity(line_embedding, anchor_embeddings)
-                        max_similarity = float(similarities.max())
-                        
-                        if max_similarity > threshold:
-                            # Create dialogue from semantic match
-                            context_start = max(0, actual_idx - 2)
-                            context_end = min(len(lines), actual_idx + 3)
-                            context = '\n'.join(lines[context_start:context_end])
-                            
-                            dialogues.append({
-                                'question': f"Context from line {actual_idx + 1}",
-                                'answer': line.strip(),
-                                'source': 'semantic',
-                                'line_number': actual_idx + 1,
-                                'similarity_score': max_similarity,
-                                'context': context
-                            })
-                    except Exception as e:
-                        # Skip problematic lines
-                        continue
-            
-            # Small delay to prevent UI freezing
-            time.sleep(0.001)
+                dialogues.extend(semantic_dialogues)
+        
+        if show_progress:
+            progress_bar.progress(end_progress)
         
         return dialogues
     
+    def _detect_semantic_dialogues_enhanced(
+        self, 
+        text: str, 
+        threshold: float,
+        model
+    ) -> List[Dict[str, Any]]:
+        """Enhanced semantic dialogue detection."""
+        dialogues = []
+        
+        # Split into paragraphs
+        paragraphs = [p.strip() for p in text.split('\n\n') if p.strip()]
+        
+        # Consciousness-related query embeddings
+        consciousness_queries = [
+            "What is consciousness?",
+            "Who am I?",
+            "What is awareness?",
+            "What is the nature of reality?",
+            "How to find peace?",
+            "What is enlightenment?",
+            "What is the self?"
+        ]
+        
+        try:
+            query_embeddings = model.encode(consciousness_queries)
+            
+            # Look for question-answer pairs
+            for i, para in enumerate(paragraphs):
+                if len(para) > 50 and ('?' in para or any(q in para.lower() for q in ['what', 'how', 'why', 'who', 'when', 'where'])):
+                    # This might be a question
+                    if i + 1 < len(paragraphs):
+                        next_para = paragraphs[i + 1]
+                        if len(next_para) > 50:
+                            # Check semantic similarity to consciousness topics
+                            combined_text = f"{para} {next_para}"
+                            text_embedding = model.encode([combined_text])
+                            
+                            # Calculate max similarity to consciousness queries
+                            similarities = model.similarity(text_embedding, query_embeddings)
+                            max_similarity = float(similarities.max())
+                            
+                            if max_similarity >= threshold:
+                                dialogues.append({
+                                    'question': para,
+                                    'answer': next_para,
+                                    'source': 'semantic',
+                                    'confidence': max_similarity,
+                                    'semantic_similarity': max_similarity
+                                })
+        
+        except Exception as e:
+            st.warning(f"Semantic detection error: {e}")
+        
+        return dialogues
+    
+    def _remove_duplicates(self, dialogues: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Remove duplicate dialogues based on content similarity."""
+        unique_dialogues = []
+        seen_keys = set()
+        
+        for dialogue in dialogues:
+            # Create a key based on first 100 characters of question and answer
+            question_key = dialogue.get('question', '')[:100].lower().strip()
+            answer_key = dialogue.get('answer', '')[:100].lower().strip()
+            key = (question_key, answer_key)
+            
+            if key not in seen_keys:
+                seen_keys.add(key)
+                unique_dialogues.append(dialogue)
+        
+        return unique_dialogues
+    
     def get_memory_usage(self) -> Dict[str, Any]:
-        """
-        Get current memory usage information.
-        
-        Returns:
-            Dict with memory usage stats
-        """
-        import psutil
-        import os
-        
-        process = psutil.Process(os.getpid())
-        memory_info = process.memory_info()
-        
-        return {
-            'rss_mb': memory_info.rss / 1024 / 1024,  # Resident Set Size
-            'vms_mb': memory_info.vms / 1024 / 1024,  # Virtual Memory Size
-            'model_loaded': self._model_loaded,
-            'model_memory_estimate': 500 if self._model_loaded else 0  # Approximate MB
-        }
+        """Get current memory usage information."""
+        try:
+            process = psutil.Process(os.getpid())
+            memory_info = process.memory_info()
+            
+            return {
+                'rss_mb': memory_info.rss / 1024 / 1024,
+                'vms_mb': memory_info.vms / 1024 / 1024,
+                'model_loaded': self._model_loaded,
+                'model_available': self._model is not None
+            }
+        except Exception:
+            return {
+                'rss_mb': 0,
+                'vms_mb': 0,
+                'model_loaded': False,
+                'model_available': False
+            }
     
     def clear_model_cache(self):
-        """Clear the loaded model to free memory."""
-        if hasattr(st, 'cache_resource'):
-            st.cache_resource.clear()
+        """Clear the model cache to free memory."""
         self._model = None
         self._model_loaded = False
-        st.success("🧹 Model cache cleared!")
-
-
-def create_enhanced_detector() -> EnhancedDialogueDetector:
-    """
-    Factory function to create enhanced detector.
+        if hasattr(st, 'cache_resource'):
+            st.cache_resource.clear()
     
-    Returns:
-        EnhancedDialogueDetector instance
-    """
-    return EnhancedDialogueDetector()
+    def analyze_text_only(self, text: str) -> Dict[str, Any]:
+        """
+        Analyze text without extracting dialogues.
+        Useful for understanding content before processing.
+        """
+        return self.content_analyzer.analyze_content(text)
 

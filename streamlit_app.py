@@ -20,11 +20,14 @@ import plotly.graph_objects as go
 import time
 import os
 import psutil
-
 # Import our modules
 try:
     from modules.enhanced_extractor import EnhancedPDFExtractor
     from modules.enhanced_detector import EnhancedDialogueDetector
+    from modules.enhanced_trainer import EnhancedOpenAITrainer
+    from modules.intake_validator import SecureIntakeValidator
+    from modules.output_validator import OutputValidator
+    from modules.content_analyzer import ContentAnalyzer, ContentType
     from modules.scorer import ConsciousnessScorer, DialogueMode
     from modules.trainer import OpenAITrainer
     from modules.jsonl_manager import JSONLManager, FileManager
@@ -127,7 +130,7 @@ def render_memory_management_sidebar():
             st.cache_data.clear()
             st.cache_resource.clear()
             st.success("Cache cleared!")
-            st.experimental_rerun()
+            st.rerun()
     
     with col2:
         if st.button("🔄 Reset All"):
@@ -137,7 +140,7 @@ def render_memory_management_sidebar():
             st.cache_data.clear()
             st.cache_resource.clear()
             st.success("System reset!")
-            st.experimental_rerun()
+            st.rerun()
     
     # Memory usage warning
     if memory_mb > 1000:  # 1GB
@@ -194,7 +197,7 @@ def render_file_manager_sidebar():
                         result = st.session_state.file_manager.delete_file(file_info['path'])
                         if result['success']:
                             st.success("File deleted")
-                            st.experimental_rerun()
+                            st.rerun()
                         else:
                             st.error(f"Error: {result['error']}")
     else:
@@ -209,12 +212,36 @@ def render_upload_tab():
     col1, col2 = st.columns([2, 1])
     
     with col1:
-        st.subheader("📄 Upload PDF Files")
+        st.subheader("📄 Upload Spiritual Texts")
+        
+        # Show supported formats
+        with st.expander("📋 Supported Formats", expanded=False):
+            try:
+                from modules.universal_intake_validator import UniversalIntakeValidator
+                universal_validator = UniversalIntakeValidator()
+                format_info = universal_validator.get_supported_formats_info()
+                
+                st.write("**Currently Available:**")
+                for fmt, info in format_info.items():
+                    if info['available']:
+                        st.write(f"• **{fmt.upper()}** - {info['name']} (Max: {info['max_size_mb']:.0f}MB)")
+                        st.write(f"  _{info['description']}_")
+                
+                unavailable = [fmt for fmt, info in format_info.items() if not info['available']]
+                if unavailable:
+                    st.write("**Requires Additional Dependencies:**")
+                    for fmt in unavailable:
+                        info = format_info[fmt]
+                        st.write(f"• **{fmt.upper()}** - {info['name']} _(Install dependencies)_")
+                        
+            except ImportError:
+                st.write("PDF, TXT, and other basic formats supported")
+        
         uploaded_files = st.file_uploader(
-            "Choose PDF files containing spiritual dialogues",
-            type=['pdf'],
+            "Choose spiritual texts in any supported format",
+            type=['pdf', 'epub', 'azw3', 'mobi', 'txt', 'docx', 'doc', 'rtf', 'html', 'htm'],
             accept_multiple_files=True,
-            help="Upload PDFs from teachers like Nisargadatta, Ramana, Rupert Spira, etc."
+            help="Upload spiritual texts from teachers like Nisargadatta, Ramana, Rupert Spira, etc."
         )
         
         # File validation
@@ -248,8 +275,8 @@ def render_upload_tab():
         
         detection_mode = st.selectbox(
             "Detection Mode",
-            ["Auto (Regex + Semantic)", "Regex Only", "Semantic Only"],
-            help="How to detect spiritual dialogues"
+            ["Multi-Mode (Recommended)", "Auto (Regex + Semantic)", "Regex Only", "Semantic Only"],
+            help="Multi-Mode handles both dialogues and non-dialogue content"
         )
         
         semantic_threshold = st.slider(
@@ -282,45 +309,128 @@ def render_upload_tab():
     # Processing section
     if uploaded_files and st.button("🚀 Start Processing", type="primary"):
         
-        # Initialize components
-        extractor = EnhancedPDFExtractor(chunk_size=chunk_size)
+        # Initialize components with universal format support
+        from modules.universal_extractor import UniversalTextExtractor
+        from modules.universal_intake_validator import UniversalIntakeValidator
+        
+        extractor = UniversalTextExtractor()
         detector = EnhancedDialogueDetector()
-        trainer = OpenAITrainer()
+        trainer = EnhancedOpenAITrainer()  # Use enhanced trainer
+        intake_validator = UniversalIntakeValidator()  # Use universal validator
         
         all_results = []
         
         for uploaded_file in uploaded_files:
             st.subheader(f"Processing: {uploaded_file.name}")
             
-            # Save uploaded file temporarily
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_file:
+            # Step 1: Comprehensive intake validation
+            st.info("🔍 Validating file...")
+            validation_result = intake_validator.validate_upload(uploaded_file)
+            
+            if not validation_result.is_valid:
+                st.error(f"❌ File validation failed: {validation_result.error_message}")
+                if validation_result.security_warnings:
+                    st.warning("⚠️ Security warnings:")
+                    for warning in validation_result.security_warnings:
+                        st.write(f"• {warning}")
+                continue
+            
+            # Display validation results
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric("File Size", f"{validation_result.file_size / 1024 / 1024:.1f}MB")
+            with col2:
+                st.metric("Pages", validation_result.page_count)
+            with col3:
+                st.metric("Has Text", "✅" if validation_result.has_text else "❌")
+            with col4:
+                st.metric("Encrypted", "🔒" if validation_result.is_encrypted else "🔓")
+            
+            # Show processing recommendations
+            if validation_result.processing_recommendations:
+                st.info("💡 **Processing Recommendations:**")
+                for rec in validation_result.processing_recommendations:
+                    st.write(f"• {rec}")
+            
+            # Get processing strategy
+            strategy = intake_validator.get_processing_strategy(validation_result)
+            
+            # Save uploaded file temporarily (securely)
+            file_ext = Path(uploaded_file.name).suffix.lower()
+            with tempfile.NamedTemporaryFile(delete=False, suffix=file_ext) as tmp_file:
+                uploaded_file.seek(0)  # Reset file pointer
                 tmp_file.write(uploaded_file.read())
                 tmp_path = tmp_file.name
             
             try:
-                # Validate file size
-                validation = validate_file_size(uploaded_file)
-                should_chunk = validation['is_large'] or use_chunking
+                # Step 2: Universal text extraction
+                st.info("📖 Extracting text...")
                 
-                # Extract text
-                if should_chunk:
-                    st.info(f"Using chunked processing ({chunk_size} pages per chunk)")
-                    extraction_result = extractor.extract_text_with_progress(tmp_path, show_progress=True)
-                else:
-                    st.info("Using standard processing")
-                    extraction_result = extractor.extract_text(tmp_path)
-                    extraction_result = {'success': True, 'text': extraction_result}
+                # Get file format info
+                format_info = extractor.get_format_info(tmp_path)
+                st.write(f"**Format:** {format_info['info']['name']} ({format_info['format'].upper()})")
+                
+                # Extract text using universal extractor
+                extraction_result = extractor.extract_text(tmp_path)
                 
                 if not extraction_result['success']:
-                    st.error(f"Failed to extract text: {extraction_result.get('error', 'Unknown error')}")
+                    st.error(f"❌ Text extraction failed: {extraction_result['error']}")
                     continue
                 
-                # Detect dialogues
+                text = extraction_result['text']
+                
+                # Display extraction results
+                col1, col2, col3, col4 = st.columns(4)
+                with col1:
+                    st.metric("Characters", len(text))
+                with col2:
+                    st.metric("Words", len(text.split()))
+                with col3:
+                    st.metric("Extractor", extraction_result['extractor'])
+                with col4:
+                    quality = format_info['info'].get('extraction_quality', 'Unknown')
+                    st.metric("Quality", quality)
+                
+                # Show metadata if available
+                if extraction_result.get('metadata'):
+                    metadata = extraction_result['metadata']
+                    st.info("📋 **Metadata:**")
+                    for key, value in metadata.items():
+                        if value and key not in ['extractor']:
+                            st.write(f"• **{key.title()}:** {value}")
+                
+                if len(text.strip()) < 100:
+                    st.warning("⚠️ Very little text extracted. File may be image-based or corrupted.")
+                    continue
+                
+                # Step 3: Dialogue detection
                 mode_map = {
+                    "Multi-Mode (Recommended)": "multi_mode",
                     "Auto (Regex + Semantic)": "auto",
                     "Regex Only": "regex", 
                     "Semantic Only": "semantic"
                 }
+                
+                # Show content analysis for multi-mode
+                if detection_mode == "Multi-Mode (Recommended)":
+                    st.info("🔍 Analyzing content type...")
+                    content_analyzer = ContentAnalyzer()
+                    content_analysis = content_analyzer.analyze_content(text)
+                    
+                    # Display content analysis
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("Content Type", content_analysis['content_type'].value.replace('_', ' ').title())
+                    with col2:
+                        st.metric("Consciousness Density", f"{content_analysis['consciousness_density']:.2f}")
+                    with col3:
+                        st.metric("Dialogue Ratio", f"{content_analysis['dialogue_ratio']:.2f}")
+                    
+                    # Show recommendations
+                    if content_analysis['recommendations']:
+                        st.info("💡 **Processing Recommendations:**")
+                        for rec in content_analysis['recommendations']:
+                            st.write(f"• {rec}")
                 
                 detection_result = detector.detect_dialogues_with_progress(
                     extraction_result['text'],
@@ -339,9 +449,9 @@ def render_upload_tab():
                     if d.get('overall_score', 0) >= score_threshold
                 ]
                 
-                # Add to trainer
+                # Add to trainer with validation
                 for dialogue in high_score_dialogues:
-                    trainer.add_dialogue(
+                    add_result = trainer.add_dialogue(
                         question=dialogue['question'],
                         answer=dialogue['answer'],
                         score=dialogue.get('overall_score', 0),
@@ -349,6 +459,12 @@ def render_upload_tab():
                         source=uploaded_file.name,
                         metadata=dialogue
                     )
+                    
+                    # Track validation results
+                    if not add_result['success']:
+                        st.warning(f"⚠️ Dialogue rejected: {add_result['issues'][0] if add_result['issues'] else 'Unknown reason'}")
+                    elif add_result['warnings']:
+                        st.info(f"ℹ️ Dialogue added with warnings: {len(add_result['warnings'])} warnings")
                 
                 # Store results
                 file_result = {
@@ -361,14 +477,34 @@ def render_upload_tab():
                 all_results.append(file_result)
                 
                 # Display results
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    st.metric("Total Dialogues", len(detection_result['dialogues']))
-                with col2:
-                    st.metric("High Score", len(high_score_dialogues))
-                with col3:
-                    avg_score = sum(d.get('overall_score', 0) for d in detection_result['dialogues']) / max(1, len(detection_result['dialogues']))
-                    st.metric("Avg Score", f"{avg_score:.2f}")
+                if detection_mode == "Multi-Mode (Recommended)" and 'content_analysis' in detection_result:
+                    # Enhanced results for multi-mode
+                    st.success(f"✅ **{uploaded_file.name}** processed successfully!")
+                    
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.metric("Total Content", len(detection_result['dialogues']))
+                    with col2:
+                        st.metric("Traditional Q&A", detection_result.get('traditional_dialogues', 0))
+                    with col3:
+                        st.metric("From Passages", detection_result.get('synthetic_dialogues', 0))
+                    with col4:
+                        st.metric("High Score", len(high_score_dialogues))
+                    
+                    # Show content type and processing method
+                    content_type = detection_result.get('content_type', 'unknown')
+                    st.info(f"📖 **Content Type:** {content_type.replace('_', ' ').title()}")
+                    
+                else:
+                    # Standard results display
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("Total Dialogues", len(detection_result['dialogues']))
+                    with col2:
+                        st.metric("High Score", len(high_score_dialogues))
+                    with col3:
+                        avg_score = sum(d.get('overall_score', 0) for d in detection_result['dialogues']) / max(1, len(detection_result['dialogues']))
+                        st.metric("Avg Score", f"{avg_score:.2f}")
                 
             except Exception as e:
                 st.error(f"Error processing {uploaded_file.name}: {str(e)}")
@@ -387,19 +523,70 @@ def render_upload_tab():
             st.session_state.filtered_dialogues = trainer.dialogues.copy()
             st.session_state.current_page = 0  # Reset pagination
             
-            # Export results
+            # Export results with comprehensive validation
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             
-            # Save JSONL
+            # Save JSONL with validation
             jsonl_path = f"./output/consciousness_dialogues_{timestamp}.jsonl"
             os.makedirs("./output", exist_ok=True)
             
-            export_result = trainer.export_to_jsonl(jsonl_path)
+            st.info("📤 Exporting with validation...")
+            export_result = trainer.export_to_jsonl(jsonl_path, validate_output=True)
             
             if export_result['success']:
                 st.success(f"✅ Exported {export_result['count']} dialogues to {jsonl_path}")
+                
+                # Display validation results
+                if export_result.get('validation'):
+                    validation = export_result['validation']
+                    
+                    # Validation metrics
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.metric("Valid Items", validation.valid_items)
+                    with col2:
+                        st.metric("Invalid Items", validation.invalid_items)
+                    with col3:
+                        st.metric("Quality Score", f"{validation.quality_score:.2f}")
+                    with col4:
+                        st.metric("OpenAI Compliant", "✅" if validation.openai_compliance else "❌")
+                    
+                    # Show issues and warnings
+                    if validation.issues:
+                        st.error("🚨 **Validation Issues:**")
+                        for issue in validation.issues[:5]:  # Show first 5
+                            st.write(f"• {issue}")
+                    
+                    if validation.warnings:
+                        st.warning("⚠️ **Validation Warnings:**")
+                        for warning in validation.warnings[:5]:  # Show first 5
+                            st.write(f"• {warning}")
+                    
+                    if validation.recommendations:
+                        st.info("💡 **Recommendations:**")
+                        for rec in validation.recommendations:
+                            st.write(f"• {rec}")
+                
+                # Show quality report
+                quality_report = trainer.get_quality_report()
+                st.info(f"📊 **Quality Report:** {quality_report['acceptance_rate']:.1%} acceptance rate, {quality_report['rejected']} dialogues rejected")
+                
+                # Export rejected dialogues for analysis
+                if quality_report['rejected'] > 0:
+                    rejected_path = f"./output/rejected_dialogues_{timestamp}.jsonl"
+                    rejected_result = trainer.export_rejected_dialogues(rejected_path)
+                    if rejected_result['success']:
+                        st.info(f"📋 Rejected dialogues saved to {rejected_path} for analysis")
+                
             else:
                 st.error(f"Export failed: {export_result.get('error', 'Unknown error')}")
+                
+                # Show validation details if available
+                if export_result.get('validation'):
+                    validation = export_result['validation']
+                    st.error("❌ **Export failed validation:**")
+                    for issue in validation.issues:
+                        st.write(f"• {issue}")
             
             # Save CSV summary
             csv_path = f"./output/consciousness_summary_{timestamp}.csv"
@@ -548,7 +735,7 @@ def render_viewer_editor_tab():
                 st.session_state.current_page = max(0, new_total_pages - 1)
             
             st.success(f"Deleted {len(page_dialogues)} dialogues")
-            st.experimental_rerun()
+            st.rerun()
     
     # Display individual dialogues
     for i, dialogue in enumerate(page_dialogues):
@@ -624,11 +811,11 @@ def render_viewer_editor_tab():
                 if dialogue_id in st.session_state.marked_for_export:
                     if st.button("❌ Unmark", key=f"unmark_{dialogue_id}"):
                         st.session_state.marked_for_export.discard(dialogue_id)
-                        st.experimental_rerun()
+                        st.rerun()
                 else:
                     if st.button("✅ Mark for Export", key=f"mark_{dialogue_id}"):
                         st.session_state.marked_for_export.add(dialogue_id)
-                        st.experimental_rerun()
+                        st.rerun()
             
             with col3:
                 if st.button("🗑️ Delete", key=f"delete_{dialogue_id}"):
@@ -642,7 +829,7 @@ def render_viewer_editor_tab():
                     st.session_state.marked_for_export.discard(dialogue_id)
                     
                     st.success("Dialogue deleted!")
-                    st.experimental_rerun()
+                    st.rerun()
     
     # Navigation buttons
     col1, col2, col3 = st.columns([1, 2, 1])
@@ -651,13 +838,13 @@ def render_viewer_editor_tab():
         if current_page > 0:
             if st.button("⬅️ Previous Page"):
                 st.session_state.current_page = current_page - 1
-                st.experimental_rerun()
+                st.rerun()
     
     with col3:
         if current_page < total_pages - 1:
             if st.button("➡️ Next Page"):
                 st.session_state.current_page = current_page + 1
-                st.experimental_rerun()
+                st.rerun()
     
     # Export marked dialogues
     if st.session_state.marked_for_export:
@@ -702,7 +889,7 @@ def render_viewer_editor_tab():
             if st.button("🧹 Clear All Marks"):
                 st.session_state.marked_for_export.clear()
                 st.success("All marks cleared!")
-                st.experimental_rerun()
+                st.rerun()
 
 
 def render_merge_jsonl_tab():
