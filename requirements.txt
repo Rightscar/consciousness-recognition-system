@@ -1,0 +1,31 @@
+# Consciousness Recognition System - Essential Dependencies
+
+# Core web framework
+streamlit>=1.28.0
+
+# Data processing
+pandas>=1.5.0
+numpy>=1.24.0
+
+# PDF processing
+PyMuPDF>=1.23.0
+pdfplumber>=0.9.0
+
+# AI and ML (optional - for semantic detection)
+sentence-transformers>=2.2.0
+torch>=2.0.0
+
+# Data visualization
+plotly>=5.15.0
+
+# System monitoring
+psutil>=5.9.0
+
+# File handling
+pathlib2>=2.3.7
+python-dateutil>=2.8.2
+
+# Optional OCR support (uncomment if needed)
+# pytesseract>=0.3.10
+# Pillow>=10.0.0
+
