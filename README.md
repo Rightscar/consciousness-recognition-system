@@ -1,304 +1,322 @@
-# 🧘 Consciousness Recognition System
+# 🧠 Enhanced Universal AI Training Data Creator
 
-An advanced AI system for processing spiritual texts and creating consciousness recognition training data. Designed to extract, analyze, and score spiritual dialogues from teachers like Nisargadatta Maharaj, Ramana Maharshi, and Rupert Spira.
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Streamlit](https://img.shields.io/badge/streamlit-1.28+-red.svg)](https://streamlit.io/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Quality Gate](https://img.shields.io/badge/quality-production--ready-green.svg)](https://github.com/your-repo/enhanced-ai-trainer)
 
-## ✨ Features
+> **Transform your AI training data creation from amateur to professional-grade with comprehensive quality assurance, error-driven development, and production-ready reliability.**
 
-### 🚀 **Performance Optimized**
-- **Chunked PDF Processing**: Handle 200+ page PDFs without memory issues
-- **Lazy Model Loading**: AI models load only when needed (reduces startup memory by 80%)
-- **Batch JSONL Editor**: Edit thousands of dialogues with smooth pagination
-- **Memory Management**: Real-time monitoring with cleanup controls
-- **File Size Validation**: Automatic warnings and processing recommendations
+## 🎯 **What This Is**
 
-### 🎯 **Core Capabilities**
-- **PDF Text Extraction**: Extract text from spiritual books and transcripts
-- **Dialogue Detection**: Find Q&A patterns using regex and semantic analysis
-- **Consciousness Scoring**: Rate dialogues for consciousness recognition quality
-- **OpenAI Training Data**: Generate fine-tuning datasets in JSONL format
-- **Batch Processing**: Handle multiple PDFs simultaneously
-- **Interactive Editor**: Review, edit, and curate training data
+The Enhanced Universal AI Training Data Creator is a comprehensive, production-grade Streamlit application that revolutionizes how you create high-quality AI training datasets. Built with an error-driven development approach, it systematically prevents common AI enhancement failures while providing professional-grade quality assurance and workflow management.
 
-### 🧠 **AI-Powered Analysis**
-- **Semantic Detection**: Find consciousness-related dialogues using AI similarity
-- **Mode Classification**: Categorize as consciousness, inquiry, teaching, or mixed
-- **Quality Scoring**: Rate based on direct pointing, non-dual language, and presence
-- **Source Tracking**: Maintain attribution to original texts
+## ✨ **Key Features**
 
-## 🚀 Quick Start
+### 🔧 **Core Enhancements (5)**
+- **📋 Manual Review Before Export** - Complete control with editable fields and approval system
+- **🎭 Dynamic Prompt Templates Per Tone** - 6 spiritual tones with dynamic loading
+- **🔍 Smart Q&A vs Monologue Detection** - Automatic content type recognition and processing
+- **🔍 Raw vs Enhanced Comparison Viewer** - Side-by-side transparency with metrics
+- **📊 Sidebar Metrics Dashboard** - Real-time analytics and progress tracking
 
-### Installation
+### 🎨 **Optional Add-ons (3)**
+- **🎨 Enhanced Theming System** - 7 professional themes with accessibility options
+- **📦 Enhanced ZIP Export** - Comprehensive packages with documentation
+- **🤗 Enhanced Hugging Face Upload** - Direct ML integration with validation
 
-1. **Clone the repository:**
+### 🎯 **Quality Scoring Modules (5)**
+- **🔍 Semantic Similarity** - Meaning preservation validation with embedding comparison
+- **🎭 Tone Alignment** - Style consistency checking against spiritual reference sets
+- **🏗️ Structure Validation** - Format compliance verification with schema checking
+- **🔄 Repetition Detection** - Content uniqueness analysis and filler identification
+- **📏 Length Optimization** - Brevity and verbosity scoring with ideal range analysis
+
+### 🚀 **Advanced Features (5)**
+- **👁️ Visual Diff Viewer** - Inline preview of original vs AI-enhanced content
+- **🔧 Fine-tune Format Preview** - Show how final JSONL looks for OpenAI/Hugging Face
+- **🏷️ Export Purpose Tagging** - Categorize datasets (Instruction, QA, Chat, Narrative)
+- **✅ Export Schema Validation** - Auto-check for missing keys, special characters, formatting
+- **📝 Mark for Rework Feature** - Flag borderline or confusing data for future refinement
+
+### 🛡️ **System Infrastructure (8)**
+- **📊 Centralized Logging** - Comprehensive event tracking with integrated log viewer
+- **💾 Session State Management** - Bulletproof data persistence across reruns
+- **🧭 UX Navigation System** - Visual breadcrumbs and guided workflow
+- **🔐 Security Management** - API key protection and secure file handling
+- **💾 Auto-Save & Recovery** - Progress protection from crashes and navigation issues
+- **📦 Export Utilities** - Robust export system with comprehensive error handling
+- **📊 Quality Dashboard** - Live quality scoring with reviewer feedback integration
+- **🎨 Professional Theming** - Multiple themes with accessibility support
+
+## 🚀 **Quick Start**
+
+### **Prerequisites**
+- Python 3.11 or higher
+- OpenAI API key
+- 2GB+ RAM recommended
+
+### **Installation**
+
+1. **Clone the repository**
 ```bash
-git clone https://github.com/your-username/consciousness-recognition-system.git
-cd consciousness-recognition-system
+git clone https://github.com/your-username/enhanced-ai-trainer.git
+cd enhanced-ai-trainer
 ```
 
-2. **Install dependencies:**
+2. **Install dependencies**
 ```bash
-pip install -r requirements.txt
+pip install -r requirements_enhanced.txt
 ```
 
-3. **Run the application:**
+3. **Set up environment variables**
 ```bash
-streamlit run streamlit_app.py
+cp .env.example .env
+# Edit .env and add your OpenAI API key:
+# OPENAI_API_KEY=your_api_key_here
 ```
 
-4. **Open in browser:**
-Navigate to `http://localhost:8501`
-
-### Basic Usage
-
-1. **Upload PDFs**: Upload spiritual texts in the "Upload" tab
-2. **Configure Settings**: Set detection mode and scoring thresholds
-3. **Process Files**: Extract and analyze dialogues automatically
-4. **Review Results**: Use the "Viewer & Editor" tab to curate data
-5. **Export Training Data**: Generate JSONL files for OpenAI fine-tuning
-
-## 📊 Performance Specifications
-
-### Memory Usage
-- **Startup**: ~100MB (vs. 600MB+ before optimization)
-- **With AI Models**: ~500MB (only when semantic detection is used)
-- **Large PDF Processing**: Stable memory usage regardless of file size
-- **Large Dataset Editing**: Memory independent of dataset size
-
-### Processing Speed
-- **Small PDFs (< 5MB)**: < 30 seconds
-- **Medium PDFs (5-20MB)**: 1-2 minutes
-- **Large PDFs (20-50MB)**: 2-5 minutes with progress tracking
-- **Very Large PDFs (> 50MB)**: Chunked processing with time estimates
-
-### Scalability
-- **PDF Size**: Tested up to 200+ pages
-- **Dataset Size**: Handle 10,000+ dialogues smoothly
-- **Batch Processing**: Multiple PDFs simultaneously
-- **Export Capacity**: Generate large training datasets efficiently
-
-## 🔧 Configuration
-
-### Detection Modes
-- **Auto**: Combines regex patterns and semantic similarity
-- **Regex Only**: Fast pattern-based detection
-- **Semantic Only**: AI-powered similarity detection
-
-### Scoring Criteria
-- **Direct Pointing**: References to awareness, being, consciousness
-- **Non-Dual Language**: "No seeker", "not two", "only consciousness"
-- **Disidentification**: "Not the body", "not thoughts", "ego is illusion"
-- **Presence**: "Right now", "this moment", "be still"
-- **Avoid Seeking**: Penalties for practice-oriented language
-- **Non-Conceptual**: Penalties for intellectual explanations
-
-### Chunking Settings
-- **Chunk Size**: 5-50 pages (default: 20)
-- **Force Chunking**: Enable for testing on small files
-- **Progress Display**: Real-time processing feedback
-
-## 📁 Project Structure
-
-```
-consciousness-recognition-system/
-├── streamlit_app.py              # Main application interface
-├── requirements.txt              # Python dependencies
-├── README.md                    # This file
-└── modules/                     # Core processing modules
-    ├── __init__.py             # Package initialization
-    ├── enhanced_extractor.py   # Chunked PDF processing
-    ├── enhanced_detector.py    # Lazy-loaded AI detection
-    ├── extractor.py           # Basic PDF text extraction
-    ├── detector.py            # Dialogue pattern detection
-    ├── scorer.py              # Consciousness quality scoring
-    ├── trainer.py             # OpenAI training data generation
-    └── jsonl_manager.py       # JSONL file management
-```
-
-## 🎯 Use Cases
-
-### 1. **OpenAI Fine-Tuning**
-Create high-quality training datasets for consciousness recognition AI:
-- Extract dialogues from spiritual texts
-- Score for consciousness recognition quality
-- Export in OpenAI fine-tuning format
-- Generate thousands of training examples
-
-### 2. **Spiritual Text Analysis**
-Analyze and categorize spiritual teachings:
-- Process entire libraries of spiritual books
-- Identify consciousness-pointing dialogues
-- Compare teaching styles across teachers
-- Create searchable databases of wisdom
-
-### 3. **AI Training Data Curation**
-Build curated datasets for consciousness AI:
-- Filter by quality scores and modes
-- Remove seeking-oriented content
-- Focus on direct pointing and presence
-- Maintain source attribution
-
-### 4. **Research and Study**
-Academic research on consciousness teachings:
-- Quantitative analysis of spiritual texts
-- Compare teaching methodologies
-- Track evolution of consciousness language
-- Generate statistics and visualizations
-
-## 🧘 Consciousness Recognition Criteria
-
-The system evaluates dialogues based on non-dual consciousness recognition principles:
-
-### ✅ **High-Quality Indicators**
-- Direct pointing to awareness/consciousness
-- Present-moment emphasis
-- Disidentification from thoughts/body
-- Non-dual language ("not two", "only consciousness")
-- Immediate recognition over gradual development
-
-### ❌ **Low-Quality Indicators**
-- Practice-oriented seeking language
-- Future-based attainment concepts
-- Intellectual explanations without direct pointing
-- Person-based identity reinforcement
-- Complex philosophical concepts
-
-### 🎯 **Scoring Algorithm**
-- **Direct Pointing** (25%): "You are awareness", "remain as you are"
-- **Non-Dual** (20%): "No seeker", "only consciousness"
-- **Disidentification** (20%): "Not the body", "not thoughts"
-- **Presence** (15%): "Right now", "this moment"
-- **Avoid Seeking** (10%): Penalty for practice language
-- **Non-Conceptual** (10%): Penalty for intellectual explanations
-
-## 📊 Output Formats
-
-### JSONL for OpenAI Fine-Tuning
-```json
-{
-  "messages": [
-    {
-      "role": "system",
-      "content": "You are a consciousness recognition guide..."
-    },
-    {
-      "role": "user", 
-      "content": "How can I become enlightened?"
-    },
-    {
-      "role": "assistant",
-      "content": "You are already that which you seek..."
-    }
-  ],
-  "metadata": {
-    "score": 0.85,
-    "mode": "consciousness",
-    "source": "nisargadatta_iam_that.pdf"
-  }
-}
-```
-
-### CSV for Analysis
-- Question, Answer, Score, Mode, Source
-- Question Length, Answer Length, Timestamp
-- Suitable for statistical analysis and visualization
-
-## 🔧 Advanced Features
-
-### Memory Management
-- Real-time memory usage monitoring
-- Manual cache clearing options
-- Automatic warnings for high usage
-- Complete system reset functionality
-
-### File Management
-- Automatic output directory organization
-- File size and modification tracking
-- JSONL validation and analysis
-- Batch file operations
-
-### Batch Processing
-- Multiple PDF upload and processing
-- Parallel dialogue detection
-- Bulk export operations
-- Progress tracking across files
-
-### Quality Control
-- Interactive dialogue editing
-- Batch marking for export
-- Score adjustment and re-classification
-- Source attribution management
-
-## 🚀 Deployment Options
-
-### Local Development
+4. **Run the application**
 ```bash
-streamlit run streamlit_app.py
+streamlit run enhanced_app.py
 ```
 
-### Docker Deployment
-```dockerfile
-FROM python:3.11-slim
-COPY . /app
-WORKDIR /app
-RUN pip install -r requirements.txt
-EXPOSE 8501
-CMD ["streamlit", "run", "streamlit_app.py", "--server.address", "0.0.0.0"]
+5. **Open your browser**
+Navigate to `http://localhost:8501` and start creating professional-grade training data!
+
+## 📋 **Usage Workflow**
+
+### **Step 1: Upload Content** 📁
+- Upload text files, PDFs, or paste content directly
+- Automatic file validation and security checking
+- Smart content type detection (Q&A, monologue, mixed)
+
+### **Step 2: Extract & Analyze** 🔄
+- Intelligent content extraction with format preservation
+- Automatic structure analysis and classification
+- Progress tracking with real-time metrics
+
+### **Step 3: Enhance with AI** ✨
+- Select from 6 spiritual tones (Universal Wisdom, Zen Buddhism, Sufi Mysticism, etc.)
+- Dynamic prompt loading with tone-specific enhancement
+- Batch processing with quality monitoring
+
+### **Step 4: Quality Analysis** 📊
+- **Live Quality Dashboard** with 5-module scoring:
+  - Semantic Similarity (meaning preservation)
+  - Tone Alignment (style consistency)
+  - Structure Validation (format compliance)
+  - Repetition Detection (content uniqueness)
+  - Length Optimization (brevity scoring)
+- **Visual Diff Viewer** for transparency
+- **Confidence scoring** with manual override options
+
+### **Step 5: Manual Review** 📋
+- **Side-by-side comparison** of original vs enhanced content
+- **Editable fields** for question/answer refinement
+- **Approval workflow** with checkbox inclusion system
+- **Mark for rework** feature for borderline content
+- **Reviewer feedback** collection for continuous improvement
+
+### **Step 6: Export & Deploy** 📦
+- **Multiple format support**: JSON, JSONL, CSV, XLSX, TXT
+- **Purpose tagging**: Instruction, QA, Chat, Narrative categories
+- **Schema validation**: Automatic error checking before export
+- **Format preview**: See exactly how data will look for OpenAI/Hugging Face
+- **ZIP packages**: Comprehensive exports with documentation
+- **Direct Hugging Face upload** with validation
+
+## 🏗️ **Architecture**
+
+### **System Design**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    ENHANCED AI TRAINING DATA CREATOR            │
+├─────────────────────────────────────────────────────────────────┤
+│  📁 Upload  │  🔄 Extract  │  ✨ Enhance  │  📊 Analyze  │  📦 Export │
+├─────────────────────────────────────────────────────────────────┤
+│                      QUALITY ASSURANCE LAYER                   │
+├─────────────────────────────────────────────────────────────────┤
+│ Semantic     │ Tone          │ Structure    │ Repetition  │ Length   │
+│ Similarity   │ Alignment     │ Validation   │ Checking    │ Scoring  │
+├─────────────────────────────────────────────────────────────────┤
+│                    EXTERNAL INTEGRATIONS                       │
+├─────────────────────────────────────────────────────────────────┤
+│ OpenAI API   │ Hugging Face  │ File System  │ Export      │ Logging  │
+│ Integration  │ Upload        │ Management   │ Utilities   │ System   │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-### Cloud Deployment
-- **Streamlit Cloud**: Direct GitHub integration
-- **Heroku**: Web application hosting
-- **AWS/GCP**: Scalable cloud deployment
-- **Docker**: Containerized deployment
+### **Module Structure**
+```
+enhanced-ai-trainer/
+├── enhanced_app.py                 # Main application
+├── requirements_enhanced.txt       # Dependencies
+├── .env.example                   # Environment template
+├── 
+├── modules/                       # Core modules (28 files)
+│   ├── # Core Enhancement Modules (5)
+│   ├── # Quality Scoring Modules (5)
+│   ├── # Advanced Features (5)
+│   ├── # System Infrastructure (8)
+│   └── # Legacy Support (5)
+├── 
+├── prompts/                       # Dynamic prompt templates (6)
+├── .streamlit/                    # Streamlit configuration
+└── docs/                          # Documentation
+```
 
-## 📈 Performance Tips
+## 📊 **Quality Assurance**
 
-### For Large PDFs (> 50MB)
-- Use chunking with 10-20 pages per chunk
-- Monitor memory usage during processing
-- Consider splitting very large files
-- Use progress tracking to monitor completion
+### **Error-Driven Development**
+This system is built around **systematic failure prevention**:
 
-### For Large Datasets (> 1000 dialogues)
-- Use pagination in Viewer & Editor (50-100 items per page)
-- Apply filters to reduce working set
-- Use batch operations for efficiency
-- Export in smaller batches if needed
+1. **Semantic Drift Detection** - Prevents meaning changes through embedding comparison
+2. **Tone Inconsistency Prevention** - Ensures style matches selected spiritual school
+3. **Hallucination Detection** - Catches fabricated facts and unnecessary expansion
+4. **Structure Preservation** - Maintains Q&A format and prevents format breaking
+5. **Repetition Elimination** - Detects and prevents filler content and redundancy
 
-### Memory Optimization
-- Clear cache periodically during long sessions
-- Use "Reset All" if experiencing performance issues
-- Monitor memory usage in sidebar
-- Close browser tab to fully reset if needed
+### **Live Quality Scoring**
+```python
+# Real-time quality metrics displayed in dashboard:
+st.metric("Semantic Similarity", f"{sim_score:.2f}")
+st.metric("Tone Alignment", f"{tone_score:.2f}")
+st.metric("Format Valid", "✅" if format_ok else "❌")
+st.metric("Overall Quality", f"{final_score:.1f}/10")
+```
 
-## 🤝 Contributing
+### **Reviewer Feedback Integration**
+- **Detailed feedback forms** with issue categorization
+- **Quality rating system** for manual assessment
+- **Training data collection** for continuous improvement
+- **Export format** ready for fine-tuning model improvement
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## 🔐 **Security Features**
 
-## 📄 License
+### **API Key Protection**
+```python
+# Secure environment variable management
+from dotenv import load_dotenv
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
+```
+
+### **File Security**
+- Automatic temporary file cleanup
+- Secure file upload validation
+- Encrypted session data storage
+- GDPR-compliant data handling
+
+## 📈 **Performance**
+
+### **Scalability**
+- **File Processing**: Up to 100MB files with chunking
+- **Dataset Size**: 10,000+ training examples
+- **Response Time**: <2 seconds for most operations
+- **Memory Usage**: Optimized with lazy loading and caching
+
+### **Reliability**
+- **Error Handling**: Comprehensive try/catch with graceful degradation
+- **Session Management**: Bulletproof state persistence
+- **Auto-Save**: Progress protection from crashes
+- **Export Validation**: File size and format checking before upload
+
+## 🤝 **Contributing**
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### **Development Setup**
+```bash
+# Clone and setup
+git clone https://github.com/your-username/enhanced-ai-trainer.git
+cd enhanced-ai-trainer
+pip install -r requirements_enhanced.txt
+
+# Run tests
+python -m pytest tests/
+
+# Run application
+streamlit run enhanced_app.py
+```
+
+## 📚 **Documentation**
+
+- **[Architecture Guide](ARCHITECTURE.md)** - Comprehensive system architecture
+- **[Quick Start Guide](QUICK_START.md)** - 5-minute setup instructions
+- **[API Reference](docs/API_REFERENCE.md)** - Module and function documentation
+- **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - Production deployment instructions
+- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
+
+## 🎯 **Use Cases**
+
+### **AI Researchers**
+- Create high-quality training datasets for language models
+- Ensure consistent tone and style across spiritual/philosophical content
+- Validate dataset quality before expensive training runs
+
+### **Content Creators**
+- Transform raw content into structured training data
+- Maintain authentic spiritual tone across different traditions
+- Export data in formats ready for popular ML platforms
+
+### **ML Engineers**
+- Integrate quality-assured datasets into training pipelines
+- Monitor data quality with comprehensive scoring metrics
+- Export directly to Hugging Face for immediate use
+
+### **Educational Institutions**
+- Create educational datasets with verified quality
+- Teach AI ethics through transparent enhancement processes
+- Research AI alignment in spiritual and philosophical contexts
+
+## 🏆 **Why Choose This System?**
+
+### **Professional Grade**
+- **Production-ready** with comprehensive error handling
+- **Enterprise security** with encrypted data management
+- **Scalable architecture** supporting large datasets
+- **Professional UI/UX** with guided workflows
+
+### **Quality Focused**
+- **Error-driven development** preventing common failures
+- **Multi-dimensional scoring** with 5 quality modules
+- **Real-time monitoring** with live dashboards
+- **Continuous improvement** through reviewer feedback
+
+### **User Friendly**
+- **Visual guidance** with breadcrumbs and progress indicators
+- **Transparent processes** with diff viewers and comparisons
+- **Manual control** with approval workflows and editing
+- **Comprehensive documentation** with quick start guides
+
+### **Technically Superior**
+- **Modular design** with 28 specialized modules
+- **Advanced features** like visual diffs and format preview
+- **Robust export** with schema validation and error checking
+- **Complete observability** with logging and monitoring
+
+## 📄 **License**
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## 🙏 **Acknowledgments**
 
-- **Nisargadatta Maharaj** - "I Am That" and other teachings
-- **Ramana Maharshi** - Self-inquiry and direct path teachings  
-- **Rupert Spira** - Non-dual understanding and clear communication
-- **OpenAI** - Fine-tuning capabilities for consciousness AI
-- **Streamlit** - Excellent framework for AI applications
+- **OpenAI** for GPT-4 API enabling intelligent content enhancement
+- **Streamlit** for the excellent web application framework
+- **Hugging Face** for ML model hosting and dataset management
+- **The open-source community** for the foundational libraries and tools
 
-## 📞 Support
+## 📞 **Support**
 
-For questions, issues, or contributions:
-- Open an issue on GitHub
-- Check the documentation in this README
-- Review the code comments for implementation details
+- **Issues**: [GitHub Issues](https://github.com/your-username/enhanced-ai-trainer/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/your-username/enhanced-ai-trainer/discussions)
+- **Documentation**: [Project Wiki](https://github.com/your-username/enhanced-ai-trainer/wiki)
+- **Email**: support@your-domain.com
 
 ---
 
-*"You are awareness itself. Remain as you are."* - Nisargadatta Maharaj
+**Transform your AI training data creation from amateur to professional-grade today!** 🚀
+
+[![Deploy to Streamlit Cloud](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/your-username/enhanced-ai-trainer/main/enhanced_app.py)
 

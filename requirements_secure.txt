@@ -1,0 +1,44 @@
+# Enhanced Universal AI Training Data Creator - Secure Requirements
+# Core dependencies with security enhancements
+
+# Streamlit Framework
+streamlit>=1.28.0
+
+# AI/ML Libraries
+openai>=1.0.0
+transformers>=4.30.0
+sentence-transformers>=2.2.0
+torch>=2.0.0
+
+# Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
+
+# File Processing
+PyPDF2>=3.0.0
+python-docx>=0.8.11
+openpyxl>=3.1.0
+
+# Security Dependencies
+python-dotenv>=1.0.0
+cryptography>=41.0.0
+python-magic>=0.4.27
+
+# Utilities
+requests>=2.31.0
+tqdm>=4.65.0
+python-dateutil>=2.8.2
+
+# Optional Dependencies for Enhanced Features
+# Uncomment if needed:
+# huggingface-hub>=0.16.0
+# datasets>=2.14.0
+# accelerate>=0.21.0
+
+# Development Dependencies (for testing)
+# pytest>=7.4.0
+# pytest-cov>=4.1.0
+# black>=23.7.0
+# flake8>=6.0.0
+

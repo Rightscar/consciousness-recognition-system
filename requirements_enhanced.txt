@@ -1,0 +1,77 @@
+# Enhanced Universal AI Training Data Creator - Requirements
+# ========================================================
+
+# Core Streamlit and Web Framework
+streamlit>=1.28.0
+streamlit-option-menu>=0.3.6
+
+# AI and Language Processing
+openai>=1.3.0
+anthropic>=0.7.0
+tiktoken>=0.5.0
+
+# Document Processing
+PyPDF2>=3.0.1
+pypdf>=3.17.0
+python-docx>=0.8.11
+pdfminer.six>=20221105
+pymupdf>=1.23.0
+pdf2image>=1.16.3
+pytesseract>=0.3.10
+
+# Data Processing and Analysis
+pandas>=2.0.0
+numpy>=1.24.0
+openpyxl>=3.1.0
+xlsxwriter>=3.1.0
+
+# HTTP and API
+requests>=2.31.0
+httpx>=0.25.0
+
+# File and Data Handling
+python-multipart>=0.0.6
+chardet>=5.2.0
+python-magic>=0.4.27
+
+# Optional: Hugging Face Integration
+datasets>=2.14.0
+huggingface-hub>=0.17.0
+transformers>=4.35.0
+
+# Optional: Advanced PDF Processing
+fitz>=0.0.1.dev2  # PyMuPDF alternative name
+Pillow>=10.0.0
+
+# Optional: Enhanced Text Processing
+nltk>=3.8.1
+spacy>=3.7.0
+textstat>=0.7.3
+
+# Development and Testing
+pytest>=7.4.0
+pytest-streamlit>=1.0.0
+
+# Utilities
+python-dotenv>=1.0.0
+tqdm>=4.66.0
+colorama>=0.4.6
+
+# Data Validation
+pydantic>=2.4.0
+jsonschema>=4.19.0
+
+# Enhanced Features
+plotly>=5.17.0  # For advanced visualizations
+markdown>=3.5.0  # For documentation processing
+beautifulsoup4>=4.12.0  # For HTML processing
+lxml>=4.9.0  # XML processing
+
+# Optional: Speech and Audio (if needed)
+# pydub>=0.25.1
+# speech-recognition>=3.10.0
+
+# Optional: Image Processing (if needed)
+# opencv-python>=4.8.0
+# scikit-image>=0.21.0
+

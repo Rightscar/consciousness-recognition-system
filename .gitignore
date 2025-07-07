@@ -1,12 +1,22 @@
-# Byte-compiled / optimized / DLL files
+# Enhanced Universal AI Training Data Creator - .gitignore
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.staging
+
+# API Keys and secrets
+*.key
+*.pem
+secrets/
+config/secrets.json
+
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
-
-# Distribution / packaging
 .Python
 build/
 develop-eggs/
@@ -20,52 +30,27 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
 
-# PyInstaller
-*.manifest
-*.spec
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -73,46 +58,53 @@ target/
 # pyenv
 .python-version
 
-# celery beat schedule file
-celerybeat-schedule
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
 # Streamlit
-.streamlit/
+.streamlit/secrets.toml
 
-# Output files
-output/
+# Application specific
+# Temporary files
 temp/
+tmp/
+*.tmp
+*.temp
+
+# Logs
 logs/
-*.jsonl
-*.csv
+*.log
+app.log
+error.log
+debug.log
+
+# Data files
+data/
+uploads/
+downloads/
+output/
+exports/
+cache/
+
+# Session files
+session_cache.pkl
+*.session
+*.state
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Processing artifacts
+*.jsonl.tmp
+*.processing
+embeddings_cache/
+model_cache/
+
+# Large files
 *.pdf
+*.epub
+*.docx
+books/
+documents/
 
 # OS generated files
 .DS_Store
@@ -123,15 +115,39 @@ logs/
 ehthumbs.db
 Thumbs.db
 
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# Backup files
+*.bak
+*.backup
+*.old
 
-# Model files (large AI models)
-models/
-*.bin
-*.safetensors
+# Test files
+test_output/
+test_data/
+coverage/
+.coverage
+.pytest_cache/
+.tox/
+
+# Documentation build
+docs/_build/
+site/
+
+# Package files
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
+# Local configuration
+local_config.json
+user_settings.json
+
+# Performance monitoring
+*.prof
+*.profile
+
+# Security
+audit.log
+security.log
+access.log
 
