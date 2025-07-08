@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: fine-tune-data-system
+    env: python
+    plan: free
+    # For production use, consider upgrading to a paid plan
+    # plan: starter
+    buildCommand: pip install -r requirements_render.txt
+    startCommand: streamlit run enhanced_app_production.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: STREAMLIT_SERVER_HEADLESS
+        value: true
+      - key: STREAMLIT_SERVER_ENABLE_CORS
+        value: false
+      - key: STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION
+        value: false
+      - key: STREAMLIT_BROWSER_GATHER_USAGE_STATS
+        value: false
+      - key: STREAMLIT_THEME_BASE
+        value: light
+      # Add your API keys here (set in Render dashboard)
+      # - key: OPENAI_API_KEY
+      #   sync: false
+      # - key: HUGGINGFACE_TOKEN
+      #   sync: false
+    disk:
+      name: fine-tune-data-disk
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1
+    healthCheckPath: /
+    autoDeploy: true
+    branch: main
+

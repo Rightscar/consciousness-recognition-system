@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: fine-tune-data-system-optimized
+    env: python
+    plan: free  # Can upgrade to starter or standard
+    buildCommand: |
+      # Install system dependencies for OCR
+      apt-get update && apt-get install -y tesseract-ocr tesseract-ocr-eng
+      # Install Python dependencies
+      pip install -r requirements_production_optimized.txt
+    startCommand: streamlit run enhanced_app_production_optimized.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false
+    envVars:
+      - key: STREAMLIT_SERVER_HEADLESS
+        value: true
+      - key: STREAMLIT_SERVER_ENABLE_CORS
+        value: false
+      - key: LOW_MEM_MODE
+        value: "1"  # Enable low memory mode for free tier
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+    # Optional: Uncomment for paid plans
+    # disk:
+    #   name: fine-tune-data-disk
+    #   mountPath: /opt/render/project/src/data
+    #   sizeGB: 5
+    # scaling:
+    #   minInstances: 1
+    #   maxInstances: 3
+
