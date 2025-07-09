@@ -15,12 +15,22 @@ import streamlit as st
 # OCR and PDF processing
 try:
     import pytesseract
-    from PIL import Image
     import pdf2image
     from PyPDF2 import PdfReader
     TESSERACT_AVAILABLE = True
 except ImportError:
     TESSERACT_AVAILABLE = False
+
+# PIL Image import (needed for type hints)
+try:
+    from PIL import Image
+    PIL_AVAILABLE = True
+except ImportError:
+    PIL_AVAILABLE = False
+    # Create a dummy Image class for type hints when PIL is not available
+    class Image:
+        class Image:
+            pass
 
 @dataclass
 class OCRConfig:

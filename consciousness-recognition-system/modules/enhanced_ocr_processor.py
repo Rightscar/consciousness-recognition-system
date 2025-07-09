@@ -22,12 +22,22 @@ import streamlit as st
 
 try:
     import pytesseract
-    from PIL import Image
     import pdf2image
     import fitz  # PyMuPDF
     OCR_AVAILABLE = True
 except ImportError:
     OCR_AVAILABLE = False
+
+# PIL Image import (needed for type hints)
+try:
+    from PIL import Image
+    PIL_AVAILABLE = True
+except ImportError:
+    PIL_AVAILABLE = False
+    # Create a dummy Image class for type hints when PIL is not available
+    class Image:
+        class Image:
+            pass
 
 try:
     import langdetect

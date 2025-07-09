@@ -15,10 +15,21 @@ import streamlit as st
 try:
     import spacy
     from spacy.matcher import PhraseMatcher, Matcher
-    from spacy.tokens import Doc, Span
     SPACY_AVAILABLE = True
 except ImportError:
     SPACY_AVAILABLE = False
+
+# spaCy types (needed for type hints)
+try:
+    from spacy.tokens import Doc, Span
+    SPACY_TYPES_AVAILABLE = True
+except ImportError:
+    SPACY_TYPES_AVAILABLE = False
+    # Create dummy classes for type hints when spaCy is not available
+    class Doc:
+        pass
+    class Span:
+        pass
 
 # Alternative NLP libraries
 try:
