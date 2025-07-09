@@ -51,7 +51,7 @@ try:
     from modules.enhanced_theming import EnhancedTheming
     from modules.enhanced_debugging import EnhancedDebugging
     from modules.async_enhancement_processor import AsyncEnhancementProcessor
-    from modules.lean_session_manager import store_large_data, retrieve_data, cleanup_old_sessions, get_memory_usage, render_memory_controls
+    from modules.lean_session_manager import store_large_data, retrieve_data, get_memory_stats, render_memory_controls
     
 except ImportError as e:
     IMPORTS_SUCCESSFUL = False
@@ -121,7 +121,7 @@ class FineTuneDataSystemNLP:
             return
         
         # Apply theming
-        self.theming.apply_theme(st.session_state.get('selected_theme', 'default'))
+        self.theming.apply_theme()
         
         # Render header
         self._render_header()
