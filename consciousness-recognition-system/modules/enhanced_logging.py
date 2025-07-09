@@ -222,12 +222,22 @@ class EnhancedLogging:
     
     def get_session_summary(self) -> Dict[str, Any]:
         """Get summary of current session"""
+        # Safe session_id parsing
+        try:
+            session_parts = self.session_id.split('_')
+            if len(session_parts) >= 3:
+                session_start = f"{session_parts[1]}_{session_parts[2]}"
+            else:
+                session_start = self.session_id
+        except (AttributeError, IndexError):
+            session_start = "unknown"
+            
         return {
             'session_id': self.session_id,
             'total_cost': self.cost_tracker.get_total_cost(),
             'total_tokens': self.cost_tracker.get_total_tokens(),
             'cost_by_model': self.cost_tracker.get_cost_by_model(),
-            'session_start': self.session_id.split('_')[1] + '_' + self.session_id.split('_')[2]
+            'session_start': session_start
         }
     
     def render_log_viewer(self):

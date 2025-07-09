@@ -106,7 +106,7 @@ class APIRateLimiter:
         self.async_client = None
         if OPENAI_AVAILABLE:
             try:
-                api_key = st.secrets.get("openai_api_key") or st.secrets.get("OPENAI_API_KEY")
+                api_key = os.getenv("OPENAI_API_KEY")
                 if api_key:
                     self.client = openai.OpenAI(api_key=api_key)
                     self.async_client = openai.AsyncOpenAI(api_key=api_key)

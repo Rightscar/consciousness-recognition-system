@@ -173,7 +173,7 @@ class EnhancedCaching:
     
     def render_cache_debug_info(self):
         """Render cache debug information in Streamlit"""
-        if st.secrets.get("debug_mode", False):
+        if os.getenv("DEBUG_MODE", "false").lower() == "true":
             with st.expander("🔧 Cache Debug Information"):
                 stats = self.get_cache_stats()
                 

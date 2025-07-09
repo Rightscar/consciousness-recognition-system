@@ -1,0 +1,24 @@
+[theme]
+# Universal AI Training Data Creator - Professional Theme
+primaryColor = "#667eea"
+backgroundColor = "#f8f9fa"
+secondaryBackgroundColor = "#ffffff"
+textColor = "#262730"
+font = "sans serif"
+
+[server]
+# Server configuration for better performance
+maxUploadSize = 200
+enableCORS = false
+enableXsrfProtection = true
+
+[browser]
+# Browser configuration
+gatherUsageStats = false
+showErrorDetails = false
+
+[logger]
+# Logging configuration
+level = "info"
+messageFormat = "%(asctime)s %(message)s"
+

@@ -27,6 +27,13 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Import production hardening
+try:
+    from production_hardening import safe_export_training_data, production_hardening
+    HARDENING_AVAILABLE = True
+except ImportError:
+    HARDENING_AVAILABLE = False
+
 
 class EnhancedZipExporter:
     """Enhanced ZIP Export Functionality - Optional Add-on"""

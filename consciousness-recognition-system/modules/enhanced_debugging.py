@@ -1,29 +1,30 @@
 """
 Enhanced Debugging Module
-=========================
+========================
 
 Provides comprehensive debugging capabilities for the Enhanced Universal AI Training Data Creator.
 Includes hidden debug mode, state inspection, performance monitoring, and troubleshooting tools.
 
 Features:
-- Hidden debug mode activated via st.secrets
+- Hidden debug mode activated via os.getenv("DEBUG_MODE")
 - Session state inspection and manipulation
 - Performance monitoring and profiling
 - Error tracking and analysis
 - Debug logging with detailed traces
 """
 
-import streamlit as st
-import logging
+import os
 import time
 import traceback
-import sys
-import psutil
-import json
-from typing import Dict, Any, Optional, List
+import streamlit as st
 from datetime import datetime
-import inspect
 from functools import wraps
+from typing import Dict, Any, List, Optional
+import json
+import psutil
+import sys
+import inspect
+import logging
 
 logger = logging.getLogger(__name__)
 
@@ -32,14 +33,14 @@ class EnhancedDebugging:
     """Enhanced debugging system with comprehensive troubleshooting tools"""
     
     def __init__(self):
-        self.debug_mode = st.secrets.get("debug_mode", False)
+        self.debug_mode = os.getenv("DEBUG_MODE", "false").lower() == "true"
         self.performance_logs = []
         self.error_logs = []
         self.state_snapshots = []
         
     def is_debug_mode(self) -> bool:
         """Check if debug mode is enabled"""
-        return self.debug_mode or st.secrets.get("debug_mode", False)
+        return self.debug_mode or os.getenv("DEBUG_MODE", "false").lower() == "true"
     
     def debug_trace(self, func):
         """Decorator to trace function calls in debug mode"""

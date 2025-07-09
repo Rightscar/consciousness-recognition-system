@@ -1,0 +1,48 @@
+# Fine-Tune Data System - Production Requirements for Render.com
+# Optimized for 512MB memory limit and fast startup
+
+# Core Streamlit
+streamlit==1.28.0
+streamlit-option-menu==0.3.6
+
+# AI/ML Core
+openai==1.3.0
+huggingface-hub==0.17.0
+
+# Essential NLP (lightweight)
+spacy==3.7.0
+nltk==3.8.1
+sentence-transformers==2.2.2
+
+# Scientific computing (optimized versions)
+numpy==1.24.0
+pandas==2.0.0
+scikit-learn==1.3.0
+
+# Document processing
+PyPDF2==3.0.1
+python-docx==0.8.11
+openpyxl==3.1.2
+
+# OCR (essential only)
+pytesseract==0.3.10
+pdf2image==1.16.3
+Pillow==10.0.0
+
+# Text processing
+python-magic==0.4.27
+chardet==5.2.0
+beautifulsoup4==4.12.2
+
+# Data validation
+pydantic==2.4.0
+
+# Memory optimization
+psutil==5.9.0
+
+# Environment
+python-dotenv==1.0.0
+
+# Web requests
+requests==2.31.0
+
