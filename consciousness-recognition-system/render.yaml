@@ -5,28 +5,16 @@ services:
     buildCommand: |
       pip install --upgrade pip
       pip install -r requirements.txt
-      python -m spacy download en_core_web_sm || echo "spaCy model download failed, continuing..."
-      python -c "import nltk; nltk.download('punkt', quiet=True); nltk.download('stopwords', quiet=True)" || echo "NLTK download failed, continuing..."
-      mkdir -p logs sessions
-      cp .streamlit/config_render.toml .streamlit/config.toml
-    startCommand: |
-      streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --browser.gatherUsageStats false
-    plan: free
+      python -m spacy download en_core_web_sm
+      python -m nltk.downloader punkt stopwords wordnet averaged_perceptron_tagger
+    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false
     envVars:
-      - key: PYTHONPATH
-        value: .
       - key: STREAMLIT_SERVER_HEADLESS
-        value: true
-      - key: STREAMLIT_BROWSER_GATHER_USAGE_STATS
-        value: false
+        value: "true"
       - key: STREAMLIT_SERVER_ENABLE_CORS
-        value: true
-      - key: STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION
-        value: false
+        value: "false"
       - key: LOW_MEM_MODE
-        value: true
-      - key: DEBUG_MODE
-        value: false
-      - key: RENDER_DEPLOYMENT
-        value: true
+        value: "true"
+      - key: PYTHONUNBUFFERED
+        value: "1"
 

@@ -1,30 +1,17 @@
 [theme]
-# Fine-Tune Data System - Professional Theme
-primaryColor = "#667eea"
-backgroundColor = "#f8f9fa"
-secondaryBackgroundColor = "#ffffff"
+primaryColor = "#FF6B6B"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F0F2F6"
 textColor = "#262730"
 font = "sans serif"
 
 [server]
-# Server configuration optimized for Render.com
-maxUploadSize = 200
-enableCORS = true
+headless = true
+enableCORS = false
 enableXsrfProtection = false
 port = 8501
-address = "0.0.0.0"
-
-[browser]
-# Browser configuration (removed deprecated options)
-gatherUsageStats = false
-
-[logger]
-# Logging configuration
-level = "info"
-messageFormat = "%(asctime)s %(message)s"
 
 [client]
-# Client configuration
 showErrorDetails = false
 toolbarMode = "minimal"
 

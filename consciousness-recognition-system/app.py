@@ -509,10 +509,11 @@ class FineTuneDataSystemNLP:
                         # Get tone prompt
                         tone_prompt = self.tone_manager.get_tone_prompt(selected_tone)
                         
-                        # Enhance content
-                        enhanced_content = self.async_processor.enhance_content_item(
-                            item, output_type, tone_prompt
+                        # Enhance content using batch processing
+                        enhanced_items = self.async_processor.process_large_batch_sync(
+                            [item], output_type, tone_prompt
                         )
+                        enhanced_content = enhanced_items[0] if enhanced_items else item
                         
                         if enhanced_content:
                             enhanced_items.append(enhanced_content)
@@ -559,8 +560,11 @@ class FineTuneDataSystemNLP:
             st.warning("No enhanced content found. Please complete AI enhancement first.")
             return
         
-        # Render manual review interface
-        reviewed_content = self.manual_review.render_review_interface(enhanced_content)
+        # Manual review interface
+        self.manual_review.render_review_interface(enhanced_content)
+        
+        # Get reviewed content from session state
+        reviewed_content = retrieve_data('reviewed_content', enhanced_content)
         
         if reviewed_content:
             store_large_data('reviewed_content', reviewed_content, force_disk=True)
@@ -598,11 +602,10 @@ class FineTuneDataSystemNLP:
             with st.spinner("Preparing export..."):
                 
                 try:
-                    # Generate export
-                    export_data = self.zip_exporter.create_comprehensive_export(
+                    # Generate export using render_export_ui
+                    export_data = self.zip_exporter.render_export_ui(
                         reviewed_content,
-                        format_type=export_format.split()[0].lower(),
-                        include_metadata=include_metadata
+                        raw_content=retrieve_data('extracted_content', [])
                     )
                     
                     if export_data:
