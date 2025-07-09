@@ -1,5 +1,5 @@
 [theme]
-# Universal AI Training Data Creator - Professional Theme
+# Fine-Tune Data System - Professional Theme
 primaryColor = "#667eea"
 backgroundColor = "#f8f9fa"
 secondaryBackgroundColor = "#ffffff"
@@ -7,18 +7,24 @@ textColor = "#262730"
 font = "sans serif"
 
 [server]
-# Server configuration for better performance
+# Server configuration optimized for Render.com
 maxUploadSize = 200
-enableCORS = false
-enableXsrfProtection = true
+enableCORS = true
+enableXsrfProtection = false
+port = 8501
+address = "0.0.0.0"
 
 [browser]
-# Browser configuration
+# Browser configuration (removed deprecated options)
 gatherUsageStats = false
-showErrorDetails = false
 
 [logger]
 # Logging configuration
 level = "info"
 messageFormat = "%(asctime)s %(message)s"
+
+[client]
+# Client configuration
+showErrorDetails = false
+toolbarMode = "minimal"
 

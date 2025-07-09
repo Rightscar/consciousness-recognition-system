@@ -1,48 +1,41 @@
-# Fine-Tune Data System - Production Requirements for Render.com
-# Optimized for 512MB memory limit and fast startup
+# Fine-Tune Data System - Production Requirements
+# Optimized for Render.com deployment
 
-# Core Streamlit
-streamlit==1.28.0
-streamlit-option-menu==0.3.6
+# Core Framework
+streamlit>=1.28.0,<2.0.0
 
-# AI/ML Core
-openai==1.3.0
-huggingface-hub==0.17.0
+# AI & NLP
+openai>=1.0.0,<2.0.0
+spacy>=3.6.0,<4.0.0
+nltk>=3.8.0,<4.0.0
+sentence-transformers>=2.2.0,<3.0.0
+textstat>=0.7.0,<1.0.0
 
-# Essential NLP (lightweight)
-spacy==3.7.0
-nltk==3.8.1
-sentence-transformers==2.2.2
+# Data Processing
+pandas>=2.0.0,<3.0.0
+numpy>=1.24.0,<2.0.0
 
-# Scientific computing (optimized versions)
-numpy==1.24.0
-pandas==2.0.0
-scikit-learn==1.3.0
+# PDF & Document Processing
+PyPDF2>=3.0.0,<4.0.0
+pdf2image>=1.16.0,<2.0.0
+python-docx>=0.8.11,<1.0.0
+ebooklib>=0.18,<1.0.0
 
-# Document processing
-PyPDF2==3.0.1
-python-docx==0.8.11
-openpyxl==3.1.2
+# OCR (Optional)
+pytesseract>=0.3.10,<1.0.0
+Pillow>=10.0.0,<11.0.0
 
-# OCR (essential only)
-pytesseract==0.3.10
-pdf2image==1.16.3
-Pillow==10.0.0
+# Web & HTTP
+requests>=2.31.0,<3.0.0
+urllib3>=2.0.0,<3.0.0
 
-# Text processing
-python-magic==0.4.27
-chardet==5.2.0
-beautifulsoup4==4.12.2
+# File Handling
+openpyxl>=3.1.0,<4.0.0
 
-# Data validation
-pydantic==2.4.0
+# Environment & Configuration
+python-dotenv>=1.0.0,<2.0.0
 
-# Memory optimization
-psutil==5.9.0
-
-# Environment
-python-dotenv==1.0.0
-
-# Web requests
-requests==2.31.0
+# Utilities
+tqdm>=4.65.0,<5.0.0
+python-dateutil>=2.8.0,<3.0.0
 

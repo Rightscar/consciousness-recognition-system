@@ -1,46 +1,36 @@
+[theme]
+# Fine-Tune Data System - Render Optimized Theme
+primaryColor = "#667eea"
+backgroundColor = "#f8f9fa"
+secondaryBackgroundColor = "#ffffff"
+textColor = "#262730"
+font = "sans serif"
+
 [server]
-headless = true
-enableCORS = false
+# Render.com optimized server configuration
+maxUploadSize = 200
+enableCORS = true
 enableXsrfProtection = false
-port = 10000
+port = 8501
+address = "0.0.0.0"
+headless = true
 
 [browser]
+# Browser configuration for production
 gatherUsageStats = false
-showErrorDetails = false
-
-[theme]
-base = "light"
-primaryColor = "#1f77b4"
-backgroundColor = "#ffffff"
-secondaryBackgroundColor = "#f0f2f6"
-textColor = "#262730"
-
-[client]
-caching = true
-displayEnabled = true
-showErrorDetails = false
-
-[runner]
-magicEnabled = true
-installTracer = false
-fixMatplotlib = true
 
 [logger]
-level = "info"
-messageFormat = "%(asctime)s %(message)s"
+# Production logging
+level = "warning"
+messageFormat = "%(asctime)s [%(levelname)s] %(message)s"
+
+[client]
+# Client configuration for production
+showErrorDetails = false
+toolbarMode = "minimal"
 
 [global]
+# Global settings for production
 developmentMode = false
-logLevel = "info"
-unitTest = false
-suppressDeprecationWarnings = true
 showWarningOnDirectExecution = false
-
-[mapbox]
-token = ""
-
-[deprecation]
-showfileUploaderEncoding = false
-showImageFormat = false
-showPyplotGlobalUse = false
 

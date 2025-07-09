@@ -1,79 +1,156 @@
 # 🧠 Fine-Tune Data System - NLP Enhanced
 
-**Advanced AI Training Data Creation with Intelligent Theme Discovery**
-
-Transform any document into high-quality AI training data with intelligent theme discovery, advanced NLP analysis, and production-ready deployment.
-
-## ✨ Key Features
-
-### 🔍 **Intelligent Theme Discovery**
-- **spaCy-powered content analysis** - Extract thematically relevant content chunks
-- **Semantic similarity matching** - Find related content using sentence transformers
-- **Interactive theme selection** - Approve/edit discovered content before enhancement
-- **Predefined theme categories** - Spiritual, Psychology, Philosophy, Self-Development
-
-### 🧠 **Advanced NLP Analysis**
-- **Readability analysis** - Flesch-Kincaid, automated readability index
-- **Sentiment analysis** - VADER sentiment with sentence-level variance
-- **Entity extraction** - Named entities and key concepts using spaCy/NLTK
-- **Topic clustering** - Automatic content clustering with keyword extraction
-- **Content insights** - Questions, quotes, dialogues, key concepts
-- **Quality metrics** - Coherence scoring, information density, structure analysis
-
-### 📄 **Universal Document Processing**
-- **OCR-enhanced PDF processing** - Handle scanned documents with timeout protection
-- **Large file support** - Process 100+ page documents without memory issues
-- **Multiple formats** - PDF, DOCX, TXT, MD with intelligent content extraction
-- **Memory optimization** - Efficient processing for Render.com free tier
-
-### ✨ **AI Enhancement Engine**
-- **13 tone categories** - Professional, conversational, academic, creative, etc.
-- **Multiple output types** - Q&A, summaries, insights, dialogues, instructions
-- **Async processing** - Handle large datasets efficiently
-- **Quality control** - Automatic routing to manual review for low-quality outputs
-
-### 📋 **Production Features**
-- **Manual review interface** - Edit and approve AI-enhanced content
-- **Export flexibility** - JSONL, JSON, TXT, ZIP formats
-- **Session persistence** - Auto-save progress, resume interrupted sessions
-- **Memory monitoring** - Real-time memory usage and cleanup
-- **Health monitoring** - Built-in health checks for deployment
-
-## 🚀 Quick Deploy to Render.com
-
-### **1-Click Deployment**
+**Advanced AI training data creation with intelligent theme discovery and comprehensive NLP analysis**
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
 
-### **Manual Deployment**
+## 🚀 **Quick Deploy to Render.com**
 
-1. **Fork/Clone Repository**
-   ```bash
-   git clone https://github.com/yourusername/fine-tune-data-system.git
-   cd fine-tune-data-system
-   ```
+### **One-Click Deployment**
+1. **Fork this repository** to your GitHub account
+2. **Connect to Render.com** and create a new Web Service
+3. **Connect your GitHub repo** and select this repository
+4. **Set Environment Variable:**
+   - `OPENAI_API_KEY` = your OpenAI API key
+5. **Deploy!** - Render will automatically use the included `render.yaml`
 
-2. **Deploy on Render.com**
-   - Create new Web Service
-   - Connect your GitHub repository
-   - Render will automatically use `render.yaml` configuration
-   - Set environment variable: `OPENAI_API_KEY`
-   - Deploy! (Takes 5-10 minutes)
+### **Manual Deployment Steps**
+```bash
+# 1. Clone repository
+git clone https://github.com/yourusername/fine-tune-data-system.git
+cd fine-tune-data-system
 
-3. **Environment Variables**
-   ```
-   OPENAI_API_KEY=your_openai_api_key_here
-   LOW_MEM_MODE=true
-   DEBUG_MODE=false
-   ```
+# 2. Push to your GitHub repository
+git remote set-url origin https://github.com/yourusername/fine-tune-data-system.git
+git push -u origin main
 
-## 🛠️ Local Development
+# 3. Deploy on Render.com
+# - Create Web Service
+# - Connect GitHub repository
+# - Set OPENAI_API_KEY environment variable
+# - Deploy automatically with render.yaml
+```
 
-### **Prerequisites**
-- Python 3.11+
-- OpenAI API key
+## ✨ **Features**
 
-### **Installation**
+### **🎯 Core Capabilities**
+- **📤 Universal Document Upload** - PDF, TXT, DOCX, EPUB with OCR support
+- **🔍 Intelligent Theme Discovery** - spaCy-powered keyword extraction and semantic analysis
+- **📊 Advanced NLP Analysis** - Readability, sentiment, entities, topic clustering
+- **✨ AI Enhancement** - 13 tone categories for content refinement
+- **📋 Manual Review Interface** - Inline editing and quality control
+- **📦 Export & Deploy** - JSONL, ZIP, and Hugging Face integration
+
+### **🧠 NLP-Enhanced Workflow**
+1. **📤 Upload & Extract** - Universal document processing with OCR
+2. **🎯 Define Themes** - Input keywords like "suffering", "mind", "choice", "truth"
+3. **🔍 Intelligent Discovery** - spaCy PhraseMatcher + semantic similarity finds relevant chunks
+4. **📋 Review & Approve** - Each chunk shows keyword match + surrounding context with ✅/❌ options
+5. **✏️ Edit & Refine** - Edit chunks, refine keywords, re-run matching
+6. **🚀 Send to GPT** - Specify output type (Q&A, Summary, Insight) + tone (Business/Neutral/Reflective)
+7. **💾 Structured Export** - All responses tied to original content for training
+
+### **🛡️ Production Features**
+- **Memory Optimization** - Works perfectly on Render.com free tier (512MB)
+- **Large File Handling** - Timeout protection for 100+ page PDFs
+- **Session Persistence** - Auto-save and resume functionality
+- **Health Monitoring** - Built-in health checks and error recovery
+- **Import Safety** - Graceful fallbacks when dependencies unavailable
+
+## 🔧 **Configuration**
+
+### **Environment Variables**
+```bash
+# Required
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Optional (with defaults)
+LOW_MEM_MODE=true          # Enable memory optimization
+DEBUG_MODE=false           # Enable debug logging
+RENDER_DEPLOYMENT=true     # Render.com specific optimizations
+```
+
+### **Render.com Optimization**
+The system is specifically optimized for Render.com deployment:
+- ✅ **Memory efficient** - Works within 512MB free tier limit
+- ✅ **Fast startup** - Optimized dependency loading
+- ✅ **Health checks** - Built-in monitoring endpoints
+- ✅ **Error recovery** - Graceful handling of hibernation/wake cycles
+
+## 📋 **Requirements**
+
+### **System Requirements**
+- **Python 3.11+**
+- **Memory:** 512MB minimum (optimized for Render.com free tier)
+- **Storage:** 1GB for temporary files and models
+
+### **Dependencies**
+All dependencies are automatically installed via `requirements.txt`:
+- **Core:** Streamlit, OpenAI, Pandas, NumPy
+- **NLP:** spaCy, NLTK, sentence-transformers, textstat
+- **Document Processing:** PyPDF2, python-docx, ebooklib
+- **OCR (Optional):** pytesseract, Pillow, pdf2image
+
+## 🏗️ **Architecture**
+
+### **Project Structure**
+```
+fine-tune-data-system/
+├── app.py                          # Main Streamlit application
+├── requirements.txt                # Production dependencies
+├── render.yaml                     # Render.com deployment config
+├── README.md                       # This file
+├── .env.example                    # Environment variables template
+├── .gitignore                      # Git ignore rules
+├── healthcheck.py                  # Health monitoring endpoint
+├── deployment_validator.py         # Pre-deployment validation
+├── .streamlit/
+│   ├── config.toml                 # Streamlit configuration
+│   ├── config_render.toml          # Render-specific config
+│   └── secrets.toml                # Local secrets (not in repo)
+├── modules/                        # Core processing modules
+│   ├── spacy_theme_discovery.py    # Theme-based content discovery
+│   ├── advanced_nlp_features.py    # Comprehensive NLP analysis
+│   ├── large_file_ocr_handler.py   # Timeout-protected OCR
+│   ├── import_safety.py            # Import error prevention
+│   └── [30+ other modules]         # Complete feature set
+├── prompts/                        # Tone enhancement templates
+│   ├── neutral_professional.txt    # Business communication
+│   ├── academic_scholarly.txt      # Research and analysis
+│   ├── conversational_friendly.txt # Casual interaction
+│   └── [10+ other tones]           # Complete tone library
+├── logs/                           # Application logs
+└── sessions/                       # Session persistence
+```
+
+### **Key Modules**
+- **`spacy_theme_discovery.py`** - Intelligent keyword-based content discovery
+- **`advanced_nlp_features.py`** - Comprehensive text analysis and quality scoring
+- **`large_file_ocr_handler.py`** - Timeout-protected OCR for large documents
+- **`import_safety.py`** - Bulletproof import handling with fallbacks
+- **`enhanced_tone_manager.py`** - 13 tone categories for content enhancement
+
+## 🔍 **Usage**
+
+### **Basic Workflow**
+1. **Upload Documents** - Drag & drop PDF, TXT, DOCX, or EPUB files
+2. **Define Themes** - Enter keywords relevant to your content
+3. **Review Discoveries** - Approve or reject theme-matched content chunks
+4. **Analyze with NLP** - Get comprehensive text analysis and quality scores
+5. **Enhance with AI** - Choose tone and enhancement type for each chunk
+6. **Manual Review** - Edit and refine the enhanced content
+7. **Export Results** - Download as JSONL, ZIP, or upload to Hugging Face
+
+### **Advanced Features**
+- **Large File Processing** - Handles 100+ page PDFs with timeout protection
+- **Session Recovery** - Resume work after browser refresh or hibernation
+- **Quality Scoring** - Automatic content quality assessment
+- **Batch Processing** - Process multiple documents simultaneously
+- **Custom Prompts** - Define your own enhancement prompts
+
+## 🛠️ **Development**
+
+### **Local Development**
 ```bash
 # Clone repository
 git clone https://github.com/yourusername/fine-tune-data-system.git
@@ -84,147 +161,72 @@ pip install -r requirements.txt
 
 # Download NLP models
 python -m spacy download en_core_web_sm
-python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk.download('vader_lexicon')"
+python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords')"
 
 # Set environment variables
 cp .env.example .env
 # Edit .env with your OpenAI API key
 
-# Run application
+# Run locally
 streamlit run app.py
 ```
 
-## 📖 Usage Guide
+### **Testing**
+```bash
+# Validate deployment readiness
+python deployment_validator.py
 
-### **Step 1: Upload Documents**
-- Upload PDF, DOCX, TXT, or MD files
-- OCR automatically processes scanned PDFs
-- Large files handled with timeout protection
+# Test imports
+python -c "import app; print('✅ All imports successful')"
 
-### **Step 2: Theme Discovery**
-- Define themes/keywords relevant to your content
-- Choose from predefined categories or create custom themes
-- AI discovers and extracts thematically relevant chunks
-- Review and approve discovered content
-
-### **Step 3: NLP Analysis**
-- Comprehensive analysis of content quality and structure
-- Readability, sentiment, entities, topics, insights
-- Content improvement suggestions
-- Quality metrics for training data assessment
-
-### **Step 4: AI Enhancement**
-- Transform content into training-ready format
-- Choose output type (Q&A, Summary, Insight, etc.)
-- Select tone (Professional, Academic, Conversational, etc.)
-- Async processing with progress tracking
-
-### **Step 5: Manual Review**
-- Review and edit AI-enhanced content
-- Quality scoring and filtering
-- Approve/reject individual items
-- Bulk operations for efficiency
-
-### **Step 6: Export & Deploy**
-- Export in multiple formats (JSONL, JSON, TXT, ZIP)
-- Include metadata and quality metrics
-- Ready for fine-tuning or further processing
-
-## 🔧 Advanced Configuration
-
-### **NLP Dependencies**
-The system automatically detects and uses available NLP libraries:
-- **spaCy** - Advanced entity extraction and linguistic analysis
-- **NLTK** - Sentiment analysis and text processing
-- **sentence-transformers** - Semantic similarity and clustering
-- **textstat** - Readability analysis
-
-### **Memory Optimization**
-- **Low Memory Mode** - Optimized for 512MB environments
-- **Disk-based storage** - Large objects stored on disk
-- **Auto-cleanup** - Automatic session cleanup
-- **Progress persistence** - Resume interrupted sessions
-
-### **OCR Configuration**
-```python
-OCRConfig(
-    timeout_per_page=30,      # Seconds per page
-    max_total_timeout=1800,   # 30 minutes total
-    memory_limit_mb=400,      # Memory limit
-    languages=['eng']         # OCR languages
-)
+# Run health check
+python healthcheck.py
 ```
 
-## 📊 System Requirements
-
-### **Render.com (Recommended)**
-- **Plan**: Free tier (512MB RAM)
-- **Build time**: 5-10 minutes
-- **Startup time**: 30-60 seconds
-- **Storage**: 1GB persistent disk
-
-### **Local Development**
-- **RAM**: 2GB+ recommended
-- **Storage**: 1GB for models and cache
-- **Python**: 3.11+ required
-
-## 🔍 Troubleshooting
+## 🚨 **Troubleshooting**
 
 ### **Common Issues**
 
-**Memory Issues on Render**
-- Ensure `LOW_MEM_MODE=true` is set
-- Use theme discovery to reduce content size
-- Process files in smaller batches
+#### **Memory Issues on Render.com**
+- ✅ **Solution:** `LOW_MEM_MODE=true` is enabled by default
+- ✅ **Automatic:** Large models are loaded lazily and cached efficiently
 
-**OCR Timeouts**
-- Large PDFs may timeout on free tier
-- Pre-process PDFs to reduce size
-- Use theme discovery to focus on relevant content
+#### **OCR Dependencies Missing**
+- ✅ **Solution:** OCR is optional - system works without Tesseract
+- ✅ **Fallback:** Graceful degradation to text-only processing
 
-**NLP Model Loading**
-- Models download automatically on first run
-- May take 2-3 minutes on cold start
-- Models cached for subsequent runs
+#### **spaCy Model Download Fails**
+- ✅ **Solution:** Automatic retry in buildCommand
+- ✅ **Fallback:** Basic NLP features work without spaCy models
 
-**Import Errors**
-- Check `requirements.txt` compatibility
-- Ensure all dependencies installed
-- Check Python version (3.11+ required)
+#### **Import Errors**
+- ✅ **Solution:** Comprehensive import safety system
+- ✅ **Prevention:** All conditional imports have fallback classes
 
-### **Health Check**
-Visit `/healthcheck` endpoint to verify system status:
-```json
-{
-  "status": "healthy",
-  "imports": true,
-  "nlp_available": true
-}
-```
+### **Health Monitoring**
+- **Health Check Endpoint:** `/healthcheck` - Returns system status
+- **Logs:** Available in Render dashboard under "Logs" tab
+- **Session Recovery:** Automatic resume after hibernation
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
-
-## 📄 License
+## 📄 **License**
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## 🤝 **Contributing**
 
-- **spaCy** - Industrial-strength NLP
-- **NLTK** - Natural Language Toolkit
-- **Streamlit** - Beautiful web apps for ML
-- **OpenAI** - GPT API for content enhancement
-- **Render.com** - Simple cloud deployment
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📞 **Support**
+
+- **Issues:** [GitHub Issues](https://github.com/yourusername/fine-tune-data-system/issues)
+- **Documentation:** This README and inline code documentation
+- **Health Check:** Visit `/healthcheck` on your deployed app
 
 ---
 
-**Built with ❤️ for the AI community**
-
-Transform your documents into high-quality training data with intelligent theme discovery and advanced NLP analysis.
+**Deploy your AI training data creation system in minutes with Render.com!** 🚀
 

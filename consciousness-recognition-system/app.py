@@ -47,7 +47,8 @@ try:
     from modules.enhanced_tone_manager import EnhancedToneManager
     from modules.manual_review import ManualReviewInterface
     from modules.enhanced_zip_export import EnhancedZipExporter
-    from modules.ui_polish_enhanced import EnhancedSidebarMetrics, EnhancedTheming
+    from modules.enhanced_sidebar_metrics import EnhancedSidebarMetrics
+    from modules.enhanced_theming import EnhancedTheming
     from modules.enhanced_debugging import EnhancedDebugging
     from modules.async_enhancement_processor import AsyncEnhancementProcessor
     from modules.lean_session_manager import store_large_data, retrieve_data, cleanup_old_sessions, get_memory_usage, render_memory_controls

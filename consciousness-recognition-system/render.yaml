@@ -1,35 +1,32 @@
 services:
   - type: web
-    name: fine-tune-data-system-nlp
+    name: fine-tune-data-system
     runtime: python3
-    plan: free
     buildCommand: |
       pip install --upgrade pip
       pip install -r requirements.txt
-      python -m spacy download en_core_web_sm
-      python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk.download('vader_lexicon'); nltk.download('averaged_perceptron_tagger'); nltk.download('wordnet')"
+      python -m spacy download en_core_web_sm || echo "spaCy model download failed, continuing..."
+      python -c "import nltk; nltk.download('punkt', quiet=True); nltk.download('stopwords', quiet=True)" || echo "NLTK download failed, continuing..."
+      mkdir -p logs sessions
+      cp .streamlit/config_render.toml .streamlit/config.toml
     startCommand: |
-      streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false
+      streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --browser.gatherUsageStats false
+    plan: free
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.0
+      - key: PYTHONPATH
+        value: .
       - key: STREAMLIT_SERVER_HEADLESS
         value: true
       - key: STREAMLIT_BROWSER_GATHER_USAGE_STATS
         value: false
       - key: STREAMLIT_SERVER_ENABLE_CORS
-        value: false
+        value: true
       - key: STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION
         value: false
       - key: LOW_MEM_MODE
         value: true
       - key: DEBUG_MODE
         value: false
-      - key: OPENAI_API_KEY
-        sync: false
-    healthCheckPath: /healthcheck
-    disk:
-      name: fine-tune-data-disk
-      mountPath: /opt/render/project/data
-      sizeGB: 1
+      - key: RENDER_DEPLOYMENT
+        value: true
 
