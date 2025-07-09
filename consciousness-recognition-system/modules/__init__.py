@@ -19,20 +19,16 @@ __author__ = "Universal AI Training Data Creator"
 
 # Import key classes for easy access
 try:
-    from .enhanced_pdf_extractor import EnhancedPDFExtractor
-    from .universal_extractor import UniversalExtractor
-    from .custom_prompt_engine import CustomPromptEngine
-    from .manual_edit_features import ManualEditManager
-    from .preview_testing_features import PreviewTestingManager
-    from .text_validator_enhanced import EnhancedTextValidator
+    from .enhanced_universal_extractor import EnhancedUniversalExtractor
+    from .dynamic_prompt_engine import DynamicPromptEngine
+    from .manual_review import ManualReviewInterface
+    from .smart_content_detector import SmartContentDetector
     
     __all__ = [
-        'EnhancedPDFExtractor',
-        'UniversalExtractor', 
-        'CustomPromptEngine',
-        'ManualEditManager',
-        'PreviewTestingManager',
-        'EnhancedTextValidator'
+        'EnhancedUniversalExtractor',
+        'DynamicPromptEngine',
+        'ManualReviewInterface',
+        'SmartContentDetector'
     ]
     
 except ImportError as e:

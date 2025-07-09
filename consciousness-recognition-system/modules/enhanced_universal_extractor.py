@@ -412,24 +412,15 @@ class EnhancedUniversalExtractor:
         return min(score, 1.0)
     
     def _extract_pdf(self, file_path: str) -> str:
-        """Extract content from PDF using enhanced PDF extractor"""
+        """Extract content from PDF using built-in PDF processing"""
         try:
-            from .enhanced_pdf_extractor import EnhancedPDFExtractor
-            extractor = EnhancedPDFExtractor()
-            result = extractor.extract_text_with_confidence(file_path)
-            
-            # Combine all extracted text
-            if isinstance(result, list) and result:
-                return '\n'.join([item.get('text', '') for item in result if item.get('text')])
-            elif isinstance(result, str):
-                return result
-            else:
-                return ""
-        except ImportError:
-            logger.warning("Enhanced PDF extractor not available, using basic extraction")
-            return self._basic_pdf_extract(file_path)
+            # Use built-in PDF processing instead
+            return self._extract_pdf_builtin(file_path)
+        except Exception as e:
+            self.logger.error(f"PDF extraction failed: {e}")
+            return ""
     
-    def _basic_pdf_extract(self, file_path: str) -> str:
+    def _extract_pdf_builtin(self, file_path: str) -> str:
         """Basic PDF extraction fallback"""
         try:
             import PyPDF2

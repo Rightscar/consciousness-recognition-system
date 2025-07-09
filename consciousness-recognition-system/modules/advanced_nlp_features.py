@@ -449,7 +449,7 @@ class AdvancedNLPProcessor:
             r'"([^"]+)"',
             r"'([^']+)'",
             r'"([^"]+)"',
-            r''([^']+)'',
+            r"'([^']+)'",
         ]
         
         for pattern in quote_patterns:
